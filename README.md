@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Still ON. — website
 
-## Getting Started
+Next.js 16 (App Router, TypeScript), Tailwind 4, GSAP ScrollTrigger, Lenis. Built from the founder reference pack (REF-01 → REF-09).
 
-First, run the development server:
+## Run
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
+npm run build && npm start
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Copy `.env.example` to `.env.local` and fill in what you have. With nothing set the site runs in **pre-launch mode**: no price, no cart, launch-list signup instead.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Pages
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `/` — hero, manifesto, pinned product reveal, how it works, formula, campaign gallery, shop, FAQ, launch list, closing campaign
+- `/products/energy-strips` — product page
+- `/story` — our story
+- `/checkout/success` — confirms an order only when Stripe reports the session as paid
+- `/api/checkout`, `/api/notify`, `sitemap.xml`, `robots.txt`
 
-## Learn More
+## Where things live
 
-To learn more about Next.js, take a look at the following resources:
+- `src/lib/site.ts` — every product fact and the FAQ. Edit copy and numbers here.
+- `src/lib/commerce.ts` — Stripe access. The price is read from Stripe, never hard-coded.
+- `src/components/Sachet.tsx`, `Box3D.tsx` — the pack, rebuilt as live artwork from the spec. Replace with print-file exports when available.
+- `src/components/ProductReveal.tsx` — the scroll sequence. `Gallery.tsx` — the campaign reel.
+- `scripts/prepare-assets.py` — how each image in `src/assets` was cut from the reference pack.
+- `docs/IMAGE-STATUS.md` — which images are final and which need replacing. `docs/HIGGSFIELD-PROMPTS.md` — prompts for the missing shots.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tests
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+`scripts/qa/func.mjs` is a Playwright suite (navigation, links, overflow, reduced motion, forms, cart, checkout). It needs a running server:
 
-## Deploy on Vercel
+```bash
+node scripts/qa/func.mjs http://localhost:3000 prelaunch
+# live mode: run scripts/qa/mock-stripe.mjs, then start the site with
+# STRIPE_SECRET_KEY=sk_test_mock STRIPE_PRICE_ID=price_test STRIPE_API_BASE=http://localhost:4010 on port 3001
+node scripts/qa/func.mjs http://localhost:3001 live
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Rollback
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Every change is a git commit. `git log` shows the history; `git revert <commit>` undoes one safely.
