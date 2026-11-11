@@ -8,6 +8,7 @@ import rOpen from "@/assets/render-open.webp";
 import rFan from "@/assets/render-fan.webp";
 import rSide from "@/assets/render-side.webp";
 import rStrip from "@/assets/render-strip.webp";
+import inHand from "@/assets/gen-strip.webp";
 
 type View = { id: string; label: string; bg: string } & ({ kind: "box" | "front" | "back" } | { kind: "img"; src: StaticImageData; alt: string; fit?: string });
 const VIEWS: View[] = [
@@ -18,6 +19,7 @@ const VIEWS: View[] = [
   { id: "scale", kind: "img", label: "To scale", bg: "bg-[#e6e3de]", src: rBox, alt: "Render: the box, 80 × 35 × 110 mm, beside two 5 × 7 cm sachets, to scale.", fit: "object-cover" },
   { id: "side", kind: "img", label: "Side, ~2 mm", bg: "bg-[#e8e4de]", src: rSide, alt: "Render: the sachet seen edge-on, about 2 mm thick.", fit: "object-cover" },
   { id: "fan", kind: "img", label: "Three, fanned", bg: "bg-[#131313]", src: rFan, alt: "Render: three sachets fanned out on black.", fit: "object-cover" },
+  { id: "hand", kind: "img", label: "In hand", bg: "bg-[#e9e3db]", src: inHand, alt: "A hand with one pink nail holds the small white strip up beside an athlete's chin. Direct flash.", fit: "object-cover" },
   { id: "strip", kind: "img", label: "The strip", bg: "bg-[#f6f3ee]", src: rStrip, alt: "Render: the strip itself, a small white film with nothing printed on it.", fit: "object-cover" },
 ];
 

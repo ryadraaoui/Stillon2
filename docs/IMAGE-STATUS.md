@@ -10,7 +10,8 @@
 | Shades portrait | how it works, gallery | REF-08 "Not made to stop." | Final (yours) |
 | Cyclist | gallery, story | REF-08, off-brand italic logo cropped out | Final (yours), cropped |
 | Wet-hair portrait | gallery, story | REF-08, baked type and off-brand logo cropped out | Final (yours), cropped narrow |
-| Film frames | gallery | REF-08 video contact sheet, shown in black-and-white | Temporary. 266 px wide: replace with stills from the video file |
+| Boxer, runner, tennis | gallery | Generated in Figma (GPT Image 2.5) from the REF-09 brief, no packaging shown | New, awaiting your approval. 1024 × 1280: upscale or regenerate for large screens |
+| Strip in hand | product page gallery | Generated in Figma, plain white strip only | New, awaiting your approval |
 | Product renders | product page gallery, cart | REF-02/05 render sheet | Temporary. ~450–550 px wide: re-export each view at 2000 px |
 | Social share image | — | Not created | Missing. Add `src/app/opengraph-image.png` (1200 × 630) |
 

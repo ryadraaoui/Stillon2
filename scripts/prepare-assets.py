@@ -34,9 +34,6 @@ save(R('r-010.jpg'), 'campaign-shades-poster.webp')
 save(R('r-011.jpg').crop((0, 0, 1122, 1290)), 'campaign-cyclist.webp')         # cyclist, off-brand logo cropped
 save(R('r-016.jpg').crop((520, 0, 1122, 1402)), 'campaign-wet.webp')           # wet hair portrait
 # --- Film frames (REF-08 video contact sheet, 4 cols x 4 rows)
-film = R('r-017.jpg'); cw, ch = film.width / 4, film.height / 4
-for i, (c, rr) in enumerate([(0,0),(1,0),(3,0),(0,1),(1,1),(2,1),(3,1),(2,2)]):
-    save(film.crop((int(c*cw)+2, int(rr*ch)+2, int((c+1)*cw)-2, int((rr+1)*ch)-2)), f'film-{i+1}.webp')
 # --- 3D renders (REF-02/05 sheet)
 sh = Image.open(os.path.join(refs, 'sheet.webp')).convert('RGB')
 tiles = {'render-front': (0, 0, 551, 602), 'render-open': (568, 0, 1032, 602), 'render-back': (1048, 0, 1462, 292),

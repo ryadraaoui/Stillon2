@@ -9,28 +9,12 @@ import { Sachet } from "./Sachet";
 import cyclist from "@/assets/campaign-cyclist.webp";
 import wet from "@/assets/campaign-wet.webp";
 import shadesPoster from "@/assets/campaign-shades-poster.webp";
-import f1 from "@/assets/film-1.webp";
-import f2 from "@/assets/film-2.webp";
-import f3 from "@/assets/film-3.webp";
-import f4 from "@/assets/film-4.webp";
-import f5 from "@/assets/film-5.webp";
-import f6 from "@/assets/film-6.webp";
-import f7 from "@/assets/film-7.webp";
-import f8 from "@/assets/film-8.webp";
+import boxer from "@/assets/gen-boxer.webp";
+import runner from "@/assets/gen-runner.webp";
+import tennis from "@/assets/gen-tennis.webp";
 
 gsap.registerPlugin(ScrollTrigger);
 const H = "h-[68svh] md:h-[74svh]";
-const FILM: [StaticImageData, string][] = [
-  [f1, "Extreme close-up of a face beaded with sweat"],
-  [f2, "A runner bent over, catching their breath on a track"],
-  [f3, "A boxer in profile, hands wrapped"],
-  [f4, "A tennis player in a white cap, freckled, half smiling"],
-  [f5, "A tennis player reaching for a serve, seen from below"],
-  [f6, "A cyclist in pink-lensed glasses, close"],
-  [f7, "A cyclist's legs and wheel on an empty road"],
-  [f8, "A flexed forearm in hard light"],
-];
-
 function Photo({ src, alt, caption, n }: { src: StaticImageData; alt: string; caption: string; n: string }) {
   return (
     <figure className={`group relative ${H} overflow-hidden rounded-xl bg-bone`} style={{ aspectRatio: `${src.width} / ${src.height}` }}>
@@ -102,6 +86,8 @@ export function Gallery() {
 
         <Photo n="03" src={wet} caption="Still on" alt="A woman with wet dark hair and a white tank top looks into the camera, skin glistening under hard flash." />
 
+        <Photo n="04" src={boxer} caption="Between rounds" alt="A boxer sits leaning toward the camera, hands in white wraps with one pink band, holding a small white strip between thumb and finger. Direct flash, ivory wall." />
+
         <div className={`relative flex ${H} aspect-[4/5] flex-col items-center justify-between overflow-hidden rounded-xl bg-white p-6 md:p-10`}>
           <p className="display self-start text-[11vw] md:text-[5.2vw]">
             Small strip.
@@ -116,22 +102,9 @@ export function Gallery() {
           <Image src={shadesPoster} alt="Campaign poster: “Not made to stop.” A freckled woman in pink-tinted glasses places a strip on her tongue. Still ON. logo." fill sizes="(max-width: 768px) 85vw, 50vw" className="object-cover" />
         </figure>
 
-        <div className={`flex ${H} w-[88vw] flex-col justify-between rounded-xl bg-ink p-6 text-ivory md:w-[58vw] md:p-10`}>
-          <div className="flex items-center justify-between">
-            <p className="eyebrow flex items-center gap-2">
-              <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-pink" /> Not done yet — the film, 15 s
-            </p>
-            <p className="eyebrow text-ivory/50">Frames 01–08</p>
-          </div>
-          <div className="grid grid-cols-4 gap-1.5 md:grid-cols-8 md:gap-2">
-            {FILM.map(([src, alt], i) => (
-              <div key={i} className="relative aspect-[9/16] overflow-hidden rounded-sm">
-                <Image src={src} alt={alt} fill sizes="12vw" className="object-cover grayscale contrast-125 transition-[filter] duration-700 hover:grayscale-0" />
-              </div>
-            ))}
-          </div>
-          <p className="display text-[9vw] md:text-[3.6vw]">Runner. Boxer. Tennis. Cyclist. Nobody clocked out.</p>
-        </div>
+        <Photo n="05" src={runner} caption="Mid-stride" alt="A sprinter in black runs straight at the camera, both feet off the ground, a blank pink bib on her top. Direct flash, ivory studio." />
+
+        <Photo n="06" src={tennis} caption="Serve" alt="A tennis player in white reaches up mid-serve, racket back, pink grip on the handle. Direct flash, ivory wall." />
 
         <div className={`flex ${H} w-[84vw] flex-col justify-center gap-8 md:w-[40vw] md:pl-10`}>
           <p className="display text-[15vw] md:text-[7vw]">
