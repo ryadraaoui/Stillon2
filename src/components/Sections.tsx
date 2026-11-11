@@ -26,7 +26,7 @@ export function HowItWorks() {
             <Sachet open className="relative z-10 w-[58%] translate-y-[14%] rotate-[-4deg]" label="An opened Still ON. sachet with the white strip coming out of the top" />
           </div>
         </Reveal>
-        <Reveal as="li" delay={120} className={`${card} bg-[#e5e5e5]`}>
+        <Reveal as="li" delay={120} data-nav-tone="dark" className={`${card} bg-[#e5e5e5]`}>
           <Image src={shades} alt="Black-and-white, direct flash: a woman in tinted glasses places the strip on her tongue with one finger." fill sizes="(max-width: 768px) 100vw, 34vw" className="object-cover object-[50%_30%] transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]" />
           <div className="relative p-6 md:p-8">
             <span className={`${num} text-white mix-blend-difference`}>2</span>
@@ -35,7 +35,7 @@ export function HowItWorks() {
             <h3 className={title}>Place it on your tongue.</h3>
           </div>
         </Reveal>
-        <Reveal as="li" delay={240} className={`${card} bg-ink text-white`}>
+        <Reveal as="li" delay={240} data-nav-tone="dark" className={`${card} bg-ink text-white`}>
           <div className="p-6 md:p-8">
             <span className={`${num} text-pink`}>3</span>
             <h3 className={`${title} mt-2`}>Let it dissolve.</h3>
@@ -127,7 +127,7 @@ export function Conversion() {
 /** Experience 08. The closing frame. No new information. */
 export function Closing() {
   return (
-    <section className="grid overflow-hidden bg-pink text-white md:grid-cols-[1fr_38%]">
+    <section data-nav-tone="dark" className="grid overflow-hidden bg-pink text-white md:grid-cols-[1fr_38%]">
       <div className="relative h-[78vw] md:order-last md:h-auto">
         <Image src={closing} alt="" fill sizes="(max-width: 768px) 100vw, 38vw" className="object-cover object-[50%_22%]" />
       </div>

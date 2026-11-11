@@ -23,7 +23,7 @@
 }
 
 @media (min-width: 1024px) {
-  :root { --nav-top: 16px; --nav-h: 76px; --nav-inset: 24px; --header-h: 100px; }
+  :root { --nav-top: 14px; --nav-h: 70px; --nav-inset: 24px; --header-h: 96px; }
 }
 
 html {
@@ -186,55 +186,73 @@ body {
 }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
-/* ---------- Floating navigation capsule ----------
-   A frosted photographic overlay, not a flat bar: layered translucent charcoal, backdrop blur + saturation,
-   a hairline border, an inner top highlight, a faint sheen and a whisper of grain. */
-.nav-fade {
-  position: fixed; inset: 0 0 auto 0; height: calc(var(--nav-top) + var(--nav-h) + 44px); z-index: 68; pointer-events: none;
-  background: linear-gradient(to bottom, rgba(17, 17, 17, 0.16), rgba(17, 17, 17, 0.05) 55%, transparent);
-  -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 100%);
+/* ---------- Floating navigation: frosted glass ----------
+   Real translucency: an alpha background plus backdrop blur, so whatever is underneath shows through, softened.
+   One material in two tones. Over light content the veil is milky and the type is ink; over dark or pink content
+   the veil is smoky and the type is ivory. The tone is read from the page (data-nav-tone) per zone, so the left
+   links, the wordmark and the right links can each sit on a different background and stay legible. */
+.nav-shell {
+  position: fixed; z-index: 70; left: var(--nav-inset); right: var(--nav-inset);
+  top: calc(var(--nav-top) + env(safe-area-inset-top, 0px));
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
+.nav-shell[data-hidden="true"] { transform: translateY(calc(-100% - 40px - env(safe-area-inset-top, 0px))); pointer-events: none; }
 .nav-capsule {
-  --nav-a: 0.72;
-  position: relative; isolation: isolate; height: var(--nav-h); border-radius: 999px;
-  color: var(--color-ivory);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background:
-    radial-gradient(120% 180% at 50% -60%, rgba(255, 255, 255, 0.13), transparent 60%),
-    linear-gradient(180deg, rgba(46, 43, 41, var(--nav-a)), rgba(17, 17, 17, calc(var(--nav-a) + 0.1)));
-  -webkit-backdrop-filter: blur(24px) saturate(150%); backdrop-filter: blur(24px) saturate(150%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.13), inset 0 -1px 0 rgba(0, 0, 0, 0.18), 0 18px 48px -22px rgba(0, 0, 0, 0.42), 0 2px 10px -6px rgba(0, 0, 0, 0.25);
-  transition: --nav-a 0.45s ease, box-shadow 0.45s ease, border-color 0.45s ease;
+  position: relative; height: var(--nav-h); border-radius: 999px;
+  background-color: rgba(214, 210, 205, 0.3); /* a faint warm-grey veil, so the glass still has an edge on pure white */
+  -webkit-backdrop-filter: blur(22px) saturate(125%); backdrop-filter: blur(22px) saturate(125%);
+  border: 1px solid rgba(17, 17, 17, 0.09);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 4px 24px rgba(0, 0, 0, 0.07);
+  transition: background-color 250ms ease, border-color 250ms ease, box-shadow 250ms ease;
 }
-@property --nav-a { syntax: "<number>"; inherits: true; initial-value: 0.72; }
-.nav-capsule[data-scrolled="true"] { --nav-a: 0.84; border-color: rgba(255, 255, 255, 0.1); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.11), inset 0 -1px 0 rgba(0, 0, 0, 0.2), 0 22px 54px -22px rgba(0, 0, 0, 0.5), 0 2px 10px -6px rgba(0, 0, 0, 0.3); }
-.nav-capsule::before { /* diagonal sheen */
-  content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: -1; pointer-events: none;
-  background: linear-gradient(105deg, rgba(255, 255, 255, 0.07) 0%, transparent 28%, transparent 72%, rgba(255, 255, 255, 0.04) 100%);
-}
-.nav-capsule::after { /* film grain, so the glass reads as material */
-  content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: -1; pointer-events: none; opacity: 0.1; mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+.nav-capsule[data-tone="dark"] {
+  background-color: rgba(20, 20, 20, 0.28);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 24px rgba(0, 0, 0, 0.06);
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .nav-capsule { --nav-a: 0.9; }
-  .nav-fade { display: none; }
+  .nav-capsule { background-color: rgba(247, 243, 238, 0.92); }
+  .nav-capsule[data-tone="dark"] { background-color: rgba(20, 20, 20, 0.88); }
 }
+.nav-zone { color: var(--color-ink); transition: color 250ms ease; }
+.nav-zone[data-tone="dark"] { color: var(--color-ivory); }
+.nav-zone :focus-visible { outline: 1.5px solid currentColor; outline-offset: 4px; border-radius: 999px; }
 .nav-link {
   position: relative; display: inline-flex; align-items: center; height: 44px; padding: 0 2px;
-  font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(247, 243, 238, 0.92);
-  transition: color 0.2s ease;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; color: inherit; opacity: 0.86;
+  transition: opacity 200ms ease;
 }
-.nav-link::after { content: ""; position: absolute; left: 2px; right: 2px; bottom: 11px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform 0.22s ease; }
-.nav-link:hover, .nav-link:focus-visible, .nav-link[aria-current="page"] { color: #fff; }
+.nav-link::after { content: ""; position: absolute; left: 2px; right: 2px; bottom: 11px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform 220ms ease; }
+.nav-link:hover, .nav-link:focus-visible, .nav-link[aria-current="page"] { opacity: 1; }
 .nav-link:hover::after, .nav-link:focus-visible::after, .nav-link[aria-current="page"]::after { transform: scaleX(1); }
+/* CTA: a fine outlined glass pill that takes the zone's ink, so it never out-shouts the wordmark */
 .nav-cta {
-  display: inline-flex; align-items: center; height: 44px; padding: 0 20px; border-radius: 999px; white-space: nowrap;
-  font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
-  background: var(--color-ivory); color: var(--color-ink); transition: background-color 0.2s ease, color 0.2s ease;
+  display: inline-flex; align-items: center; height: 40px; padding: 0 20px; border-radius: 999px; white-space: nowrap;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: inherit;
+  background-color: rgba(255, 255, 255, 0.34); box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.22);
+  transition: background-color 200ms ease, color 200ms ease, box-shadow 200ms ease;
 }
-.nav-cta:hover, .nav-cta:focus-visible { background: var(--color-pink); color: #fff; }
-@media (max-width: 1023px) { .nav-cta { height: 40px; padding: 0 13px; font-size: 10px; letter-spacing: 0.08em; } }
-@media (prefers-reduced-motion: reduce) { .nav-capsule, .nav-link, .nav-link::after, .nav-cta { transition: none; } }
+.nav-zone[data-tone="dark"] .nav-cta { background-color: rgba(255, 255, 255, 0.12); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.42); }
+.nav-cta:hover, .nav-cta:focus-visible { background-color: var(--color-ink); color: var(--color-ivory); box-shadow: inset 0 0 0 1px var(--color-ink); }
+.nav-zone[data-tone="dark"] .nav-cta:hover, .nav-zone[data-tone="dark"] .nav-cta:focus-visible { background-color: var(--color-ivory); color: var(--color-ink); box-shadow: inset 0 0 0 1px var(--color-ivory); }
+.nav-logo { position: relative; display: flex; height: 44px; align-items: center; padding: 0 10px; }
+.nav-logo img { transition: opacity 250ms ease; }
+.nav-logo img + img { position: absolute; left: 10px; top: 50%; translate: 0 -50%; opacity: 0; }
+.nav-zone[data-tone="dark"] .nav-logo img:first-child { opacity: 0; }
+.nav-zone[data-tone="dark"] .nav-logo img + img { opacity: 1; }
+/* mobile menu: a frosted panel that drops from under the capsule */
+.nav-panel {
+  position: fixed; z-index: 69; left: var(--nav-inset); right: var(--nav-inset);
+  top: calc(var(--nav-top) + var(--nav-h) + 8px + env(safe-area-inset-top, 0px));
+  border-radius: 28px; padding: 14px 22px 22px; color: var(--color-ivory);
+  background-color: rgba(20, 20, 20, 0.52);
+  -webkit-backdrop-filter: blur(26px) saturate(125%); backdrop-filter: blur(26px) saturate(125%);
+  border: 1px solid rgba(255, 255, 255, 0.14); box-shadow: 0 18px 50px -18px rgba(0, 0, 0, 0.35);
+  transform-origin: 50% 0; transition: opacity 240ms ease, transform 300ms cubic-bezier(0.22, 1, 0.36, 1), visibility 240ms;
+}
+.nav-panel[data-open="false"] { opacity: 0; visibility: hidden; transform: translateY(-10px) scale(0.98); pointer-events: none; }
+.nav-scrim { position: fixed; inset: 0; z-index: 68; background: rgba(17, 17, 17, 0.28); transition: opacity 240ms ease, visibility 240ms; }
+.nav-scrim[data-open="false"] { opacity: 0; visibility: hidden; pointer-events: none; }
+@media (max-width: 1023px) { .nav-cta { height: 38px; padding: 0 14px; font-size: 10.5px; } }
+@media (prefers-reduced-motion: reduce) { .nav-shell, .nav-capsule, .nav-zone, .nav-link, .nav-link::after, .nav-cta, .nav-logo img, .nav-panel, .nav-scrim { transition: none; } }

@@ -16,7 +16,7 @@ const H = "h-[66svh] md:h-[76svh]";
 
 function Photo({ src, alt, n, label, wide = false }: { src: StaticImageData; alt: string; n: string; label: string; wide?: boolean }) {
   return (
-    <figure className={`relative ${H} overflow-hidden bg-bone`} style={{ aspectRatio: wide ? "1 / 1.02" : `${src.width} / ${src.height}` }}>
+    <figure data-nav-tone="dark" className={`relative ${H} overflow-hidden bg-bone`} style={{ aspectRatio: wide ? "1 / 1.02" : `${src.width} / ${src.height}` }}>
       {/* the image is wider than its frame so it can drift as the reel moves */}
       <div data-drift className="absolute inset-y-0 -left-[9%] w-[118%]">
         <Image src={src} alt={alt} fill sizes="(max-width: 768px) 90vw, 60vw" className="object-cover" />
@@ -94,7 +94,7 @@ export function Campaign() {
 
         <Photo n="02" label="Boxer" src={boxer} alt="Black-and-white, direct flash: a boxer sits forward between rounds, hands wrapped, one pink band at the wrist, a white strip held between two fingers." />
 
-        <div className={`flex ${H} aspect-[4/5] flex-col justify-end overflow-hidden bg-pink p-6 text-white md:p-10`}>
+        <div className={`flex ${H} aspect-[4/5] flex-col justify-end overflow-hidden bg-pink p-6 text-white md:p-10`} data-nav-tone="dark">
           <p data-poster-type className="display display-italic text-[13.5vw] leading-[0.82] md:text-[6.6vw]">
             La journée
             <br />

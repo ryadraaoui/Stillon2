@@ -78,7 +78,7 @@ export function ProductReveal() {
   return (
     <section id="strips" ref={root} aria-label="The product" className="relative bg-white">
       <div data-pin className="relative h-[100svh] overflow-hidden bg-white motion-reduce:hidden">
-        <div data-bg-pink className="absolute inset-0 bg-pink" style={{ clipPath: "circle(0% at 50% 55%)" }} />
+        <div data-bg-pink data-nav-tone="dark" className="absolute inset-0 bg-pink" style={{ clipPath: "circle(0% at 50% 55%)" }} />
         <div data-ink className="wrap absolute top-[calc(var(--header-h)+2.5svh)] left-0 z-20 text-ink">
           {head}
         </div>
