@@ -90,8 +90,15 @@ export function Header() {
       }
       readTone();
     };
+    let after = 0;
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
+      // scroll-scrubbed scenes keep changing colour briefly after scrolling stops: read the tone again then
+      clearTimeout(after);
+      after = window.setTimeout(() => {
+        readTone();
+        after = window.setTimeout(readTone, 700);
+      }, 260);
     };
     const show = () => {
       acc = 0;
@@ -113,6 +120,7 @@ export function Header() {
     const settle = [300, 1200, 2400].map((t) => window.setTimeout(readTone, t)); // after images, entrance and pin set-up
     return () => {
       cancelAnimationFrame(frame);
+      clearTimeout(after);
       settle.forEach(clearTimeout);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);

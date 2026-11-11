@@ -15,7 +15,7 @@ Copy `.env.example` to `.env.local` and fill in what you have. With nothing set 
 
 ## Pages
 
-- `/` — eight experiences: hero, ticker, pinned product reveal, how it works, horizontal campaign reel, formula, early access, closing
+- `/` — six sections: hero, pinned product reveal (ending on how it works), horizontal campaign reel, formula, offer + early access, closing
 - `/products/energy-strips` — product page (full details, safety, FAQ)
 - `/story`, `/faq`, `/shipping`, `/privacy`, `/terms`
 - `/checkout/success` — confirms an order only when Stripe reports the session as paid
@@ -29,6 +29,8 @@ Set `STRIPE_SECRET_KEY` and `STRIPE_PRICE_ID` and the same components switch to 
 Early-access signups need `NOTIFY_WEBHOOK_URL` in production (the host has no persistent disk). Optional footer links: `NEXT_PUBLIC_CONTACT_EMAIL`, `NEXT_PUBLIC_INSTAGRAM_URL`.
 
 ## Where things live
+
+- `src/config/offers.ts` — bundles and preview prices, one source of truth (see `docs/OFFERS.md`).
 
 - `src/lib/site.ts` — every product fact and the FAQ. Edit copy and numbers here.
 - `src/lib/commerce.ts` — Stripe access. The price is read from Stripe, never hard-coded.

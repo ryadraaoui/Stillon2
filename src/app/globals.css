@@ -2,13 +2,14 @@
 
 /* Still ON. — brand tokens from the production spec sheet (REF-01) */
 @theme {
-  --color-ivory: #f7f3ee;
-  --color-bone: #e9e5df;
+  --color-ivory: #f7f6f4;
+  --color-pack: #f7f3ee; /* the printed pack colour (REF-01). Product artwork only */
+  --color-bone: #efeeeb;
   --color-pink: #ff006e;
   --color-pinktext: #e0005f;
   --color-pinkdeep: #c20050; /* small text on ivory/bone, AA contrast */
   --color-ink: #111111;
-  --color-grey: #4a4642;
+  --color-grey: #6f6f6f; /* brand subtle gray is #777777; nudged darker so small text passes AA on white and ivory */
   --font-sans: "Inter Tight Variable", "Inter Tight", "Helvetica Neue", Arial, sans-serif;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -27,7 +28,7 @@
 }
 
 html {
-  background: var(--color-ivory);
+  background: #ffffff;
   color: var(--color-ink);
   -webkit-text-size-adjust: 100%;
   scroll-padding-top: var(--header-h);
@@ -39,7 +40,7 @@ html.lenis, html.lenis body { height: auto; }
 body {
   font-family: var(--font-sans);
   font-feature-settings: "ss01", "cv11";
-  background: var(--color-ivory);
+  background: #ffffff;
   overflow-x: clip;
 }
 ::selection { background: var(--color-pink); color: #fff; }
@@ -146,7 +147,7 @@ body {
   filter: drop-shadow(0 1.2cqw 1.6cqw rgba(60, 40, 20, 0.16));
 }
 .sachet-back { transform: rotateY(180deg); }
-.sachet-cap, .sachet-body { background: var(--color-ivory); position: relative; }
+.sachet-cap, .sachet-body { background: var(--color-pack); position: relative; }
 .sachet-cap { height: 6.2%; border-radius: 0.8cqw 0.8cqw 0 0; will-change: transform; transform-origin: 100% 100%; }
 .sachet-body { flex: 1; border-radius: 0 0 0.8cqw 0.8cqw; }
 .ridge-v { background-image: repeating-linear-gradient(90deg, rgba(17, 17, 17, 0.11) 0 0.45cqw, transparent 0.45cqw 1.5cqw); }
@@ -167,7 +168,7 @@ body {
 /* ---------- The box (80 × 35 × 110 mm) ---------- */
 .box3d { position: relative; aspect-ratio: 80 / 110; container-type: inline-size; perspective: 1800px; }
 .box3d-inner { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateX(var(--rx, -6deg)) rotateY(var(--ry, 28deg)); transition: transform 0.6s var(--ease-out-expo); }
-.box3d-face { position: absolute; background: var(--color-ivory); color: var(--color-ink); backface-visibility: hidden; }
+.box3d-face { position: absolute; background: var(--color-pack); color: var(--color-ink); backface-visibility: hidden; }
 .box3d-front { inset: 0; transform: translateZ(21.875cqw); background: linear-gradient(100deg, #fbf9f6, #f3efe9); }
 .box3d-right { top: 0; bottom: 0; left: 50%; width: 43.75cqw; margin-left: -21.875cqw; transform: rotateY(90deg) translateZ(50cqw); background: linear-gradient(90deg, #e6e1da, #dcd6ce); }
 .box3d-left { top: 0; bottom: 0; left: 50%; width: 43.75cqw; margin-left: -21.875cqw; transform: rotateY(-90deg) translateZ(50cqw); background: linear-gradient(90deg, #dcd6ce, #e6e1da); }

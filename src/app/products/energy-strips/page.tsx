@@ -5,6 +5,7 @@ import { getCommerce } from "@/lib/commerce";
 import { FORMULA, PRODUCT, SITE } from "@/lib/site";
 import { PdpGallery } from "@/components/PdpGallery";
 import { Purchase } from "@/components/Purchase";
+import { OfferConfigurator } from "@/components/Offers";
 import { Reveal, Line } from "@/components/Reveal";
 import { ScaleCompare, Closing } from "@/components/Sections";
 import { Faq } from "@/components/Faq";
@@ -56,7 +57,7 @@ export default async function ProductPage({ searchParams }: PageProps<"/products
           </div>
           <div className="min-w-0 md:py-4">
             <p className="eyebrow mb-4 text-grey">
-              {PRODUCT.number} · {PRODUCT.flavourFr} · {PRODUCT.flavourEn} · Box of {PRODUCT.count}
+              {PRODUCT.number} · {PRODUCT.flavourFr} · {PRODUCT.flavourEn} · {PRODUCT.count} strips per box
             </p>
             <h1 className="display text-[13vw] md:text-[5.2vw]">
               Bandelettes
@@ -64,8 +65,19 @@ export default async function ProductPage({ searchParams }: PageProps<"/products
               énergisantes<span className="text-pink">.</span>
             </h1>
             <p className="mt-3 text-lg font-bold text-grey">Energy strips with caffeine + L-theanine</p>
-            <div id="early-access" className="mt-7 scroll-mt-24 rounded-2xl bg-bone p-6 md:p-7">
-              <Purchase source="pdp" />
+            <div id="early-access" className="mt-7 scroll-mt-28">
+              {live ? (
+                <div className="rounded-2xl bg-bone p-6 md:p-7">
+                  <Purchase source="pdp" />
+                </div>
+              ) : (
+                <>
+                  <p className="eyebrow mb-3 flex items-center gap-2" data-testid="status">
+                    <span className="inline-block h-2 w-2 rounded-full bg-pink" /> Prelaunch · Pick your pace
+                  </p>
+                  <OfferConfigurator source="pdp" stage={false} />
+                </>
+              )}
             </div>
             <p className="mt-7 max-w-[46ch] text-[17px]">One small white strip in its own sachet. Open it, place it on your tongue, let it dissolve.</p>
 

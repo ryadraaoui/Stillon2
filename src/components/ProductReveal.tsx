@@ -13,9 +13,23 @@ const FRAMES = [
   { n: "03", t: "The strip", p: "White. Mint. Nothing printed on it." },
 ];
 
+const STEPS = ["Open it.", "Place it on your tongue.", "Let it dissolve."];
+function Steps({ className = "" }: { className?: string }) {
+  return (
+    <ol className={className}>
+      {STEPS.map((t, i) => (
+        <li key={t} data-step className="flex items-baseline gap-4 border-t border-current/25 py-4 first:border-t-2 first:border-current md:gap-6 md:py-5">
+          <span className="w-[0.7em] text-3xl leading-none font-black md:text-5xl">{i + 1}</span>
+          <span className="display text-[7vw] md:text-[3vw]">{t}</span>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 /**
- * Experience 03. The immersive product reveal: box → sachet (turns to show its back) → torn open as the
- * world floods pink → the strip alone. One pinned sequence of about three screens, scrubbed, never hijacked.
+ * Section 02. The immersive product reveal: box → sachet (turns to show its back) → torn open as the
+ * world floods pink → the strip alone → how to use it. One pinned sequence of about three screens, scrubbed, never hijacked.
  * Box and sachet are live artwork rebuilt from the approved pack spec, so every frame is exact.
  * Reduced motion: three stills.
  */
@@ -35,9 +49,11 @@ export function ProductReveal() {
       const wide = window.matchMedia("(min-width: 768px)").matches;
       gsap.set(sachet, { xPercent: wide ? 78 : 58, yPercent: 30, scale: wide ? 0.5 : 0.42, rotation: 9 });
       gsap.set(strip, { autoAlpha: 0, xPercent: -50 });
+      gsap.set(q("[data-steps]"), { autoAlpha: 0 });
+      gsap.set(q("[data-pin] [data-step]"), { autoAlpha: 0, x: 30 });
       const tl = gsap.timeline({
         defaults: { ease: "power2.inOut" },
-        scrollTrigger: { trigger: q("[data-pin]")[0], start: "top top", end: "+=300%", pin: true, scrub: 0.7, anticipatePin: 1, invalidateOnRefresh: true },
+        scrollTrigger: { trigger: q("[data-pin]")[0], start: "top top", end: "+=330%", pin: true, scrub: 0.7, anticipatePin: 1, invalidateOnRefresh: true },
       });
       const swap = (from: number, to: number, at: number) => tl.to(caps[from], { autoAlpha: 0, y: -24, duration: 0.35 }, at).to(caps[to], { autoAlpha: 1, y: 0, duration: 0.45 }, at + 0.3);
       // 01 → 02: the box leaves, one sachet comes forward
@@ -58,6 +74,11 @@ export function ProductReveal() {
         .to(q("[data-pin] [data-sachet-cap]"), { autoAlpha: 0, duration: 0.3 }, 6)
         .to(sachet, { y: "115vh", rotation: 16, duration: 1.3, ease: "power2.in" }, 6)
         .to(strip, { top: "50%", yPercent: -50, rotation: -7, scale: 1.7, duration: 1.3 }, 6.1)
+        // 04: how it works, beside the strip
+        .to(caps[2], { autoAlpha: 0, y: -24, duration: 0.35 }, 7.5)
+        .to(q("[data-stage]"), wide ? { xPercent: -62, duration: 1 } : { yPercent: -30, scale: 0.72, duration: 1 }, 7.5)
+        .set(q("[data-steps]"), { autoAlpha: 1 }, 7.7)
+        .to(q("[data-pin] [data-step]"), { autoAlpha: 1, x: 0, duration: 0.45, stagger: 0.22 }, 7.8)
         .to({}, { duration: 0.5 });
       tl.to(q("[data-progress]"), { scaleX: 1, duration: tl.duration(), ease: "none" }, 0);
     }, el);
@@ -84,7 +105,7 @@ export function ProductReveal() {
         </div>
 
         <div className="absolute inset-0 grid place-items-center pt-[calc(var(--header-h)+10svh)] max-md:pb-[14svh]">
-          <div className="relative w-[min(31svh,50vw)] md:w-[min(36svh,26vw)]">
+          <div data-stage className="relative w-[min(31svh,50vw)] md:w-[min(36svh,26vw)]">
             <div data-box className="absolute top-[22%] left-[-34%] w-[70%] md:top-[14%] md:left-[-58%] md:w-[86%]">
               <Box3D className="w-full" />
             </div>
@@ -103,6 +124,11 @@ export function ProductReveal() {
             <p className="text-xl leading-snug font-bold md:text-2xl">{f.p}</p>
           </div>
         ))}
+
+        <div data-steps className="absolute inset-x-[var(--gutter)] bottom-[5svh] z-20 text-white md:inset-x-auto md:top-1/2 md:right-[var(--gutter)] md:bottom-auto md:w-[42vw] md:-translate-y-1/2">
+          <p className="eyebrow mb-3">04 How it works</p>
+          <Steps />
+        </div>
 
         <div aria-hidden="true" className="absolute inset-x-0 bottom-0 z-30 h-[3px]">
           <div data-progress className="h-full origin-left scale-x-0 bg-pink" />
@@ -128,6 +154,7 @@ export function ProductReveal() {
             <figcaption className="text-center font-bold">{FRAMES[2].p}</figcaption>
           </figure>
         </div>
+        <Steps className="mx-auto mt-14 max-w-xl" />
       </div>
     </section>
   );

@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { CTA, EARLY_ACCESS } from "@/lib/site";
+import { track } from "@/lib/track";
 import { Sachet } from "./Sachet";
 import hero from "@/assets/bw-hero.webp";
 
@@ -75,14 +76,15 @@ export function Hero() {
           </span>
         </h1>
         <div className="mt-6 flex flex-col gap-5 md:mt-8 md:flex-row md:items-center md:gap-10">
-          <p data-h-sub className="max-w-[26ch] text-[19px] leading-snug font-bold md:text-xl">
-            Energy strips with caffeine + L‑theanine.
-          </p>
+          <div data-h-sub className="max-w-[30ch]">
+            <p className="text-[21px] leading-tight font-black md:text-2xl">Energy strips. Made for whatever comes next.</p>
+            <p className="mt-2 text-[15px] font-semibold text-ink/80">Dissolvable strips with caffeine + L‑theanine.</p>
+          </div>
           <div data-h-cta className="flex flex-wrap gap-3">
-            <Link href={EARLY_ACCESS} className="btn btn-ink">
+            <Link href={EARLY_ACCESS} className="btn btn-ink" onClick={() => track("hero_cta_click", { cta: "early_access" })}>
               {CTA}
             </Link>
-            <Link href="/#strips" className="btn btn-line">
+            <Link href="/#strips" className="btn btn-line" onClick={() => track("product_discovery", { from: "hero" })}>
               Discover the strips
             </Link>
           </div>
