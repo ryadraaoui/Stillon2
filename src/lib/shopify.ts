@@ -77,6 +77,7 @@ export async function loadShopifyOffers(): Promise<ShopifyCommerce | null> {
       const v = node?.variants ? node.variants.nodes[0] : node;
       if (!v || (!node?.variants && v.id !== ids[i])) throw new Error(`${base.id} was not found in Shopify (is it published to the storefront channel?)`);
       if (!v.availableForSale) throw new Error(`variant for ${base.id} is not available for sale`);
+      if (!(Number(v.price.amount) > 0)) throw new Error(`${base.id} has a price of ${v.price.amount}: set a real price in Shopify`);
       currencies.add(v.price.currencyCode);
       let subscriptionPrice: number | null = null;
       if (base.subscriptionEligible) {
