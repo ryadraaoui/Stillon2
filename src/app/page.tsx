@@ -16,7 +16,7 @@ export default async function Home() {
       <ProductReveal />
       <Campaign />
       <Formula />
-      <Conversion live={commerce.mode === "live"} />
+      <Conversion live={commerce.mode === "live"} shop={commerce.mode === "shopify"} />
       <Closing />
     </>
   );

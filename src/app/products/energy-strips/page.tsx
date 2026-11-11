@@ -24,6 +24,7 @@ export const metadata: Metadata = {
 export default async function ProductPage({ searchParams }: PageProps<"/products/energy-strips">) {
   const [commerce, sp] = await Promise.all([getCommerce(), searchParams]);
   const live = commerce.mode === "live";
+  const shop = commerce.mode === "shopify";
   const ld = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -77,9 +78,9 @@ export default async function ProductPage({ searchParams }: PageProps<"/products
               ) : (
                 <>
                   <p className="eyebrow mb-3 flex items-center gap-2" data-testid="status">
-                    <span className="inline-block h-2 w-2 rounded-full bg-pink" /> Prelaunch · Pick your pace
+                    <span className="inline-block h-2 w-2 rounded-full bg-pink" /> {shop ? "Pick your pace" : "Prelaunch · Pick your pace"}
                   </p>
-                  <OfferConfigurator source="pdp" stage={false} />
+                  <OfferConfigurator source="pdp" stage={false} shop={shop} />
                 </>
               )}
             </div>

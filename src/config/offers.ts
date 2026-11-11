@@ -36,14 +36,15 @@ export const offerConfig = {
 export type Interval = (typeof offerConfig.intervals)[number];
 
 export const getOffer = (id: string) => offerConfig.offers.find((o) => o.id === id);
-export const money = (n: number) => (Number.isInteger(n) ? `$${n}` : `$${n.toFixed(2)}`);
+export const money = (n: number, currency: string = offerConfig.currency) =>
+  new Intl.NumberFormat("en-US", { style: "currency", currency, minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 }).format(n);
 /** Price for the chosen purchase type. Falls back to one-time when the offer cannot repeat. */
 export const priceFor = (o: Offer, type: PurchaseType) => (type === "repeat" && o.subscriptionEligible && o.subscriptionPrice != null ? o.subscriptionPrice : o.oneTimePrice);
 /** Always derived, never typed in. */
 export const unitPrice = (o: Offer, type: PurchaseType = "one-time") => priceFor(o, type) / o.strips;
-export const unitLabel = (o: Offer, type: PurchaseType = "one-time") => `$${unitPrice(o, type).toFixed(2)} per strip`;
+export const unitLabel = (o: Offer, type: PurchaseType = "one-time", currency: string = offerConfig.currency) => `${money(unitPrice(o, type), currency).replace(/(\.\d)$/, "$10")} per strip`;
 /** Saving per delivery when repeating, derived from the two configured prices. 0 when not applicable. */
 export const repeatSaving = (o: Offer) => (o.subscriptionEligible && o.subscriptionPrice != null ? o.oneTimePrice - o.subscriptionPrice : 0);
 /** True only for the offer(s) whose one-time unit price is genuinely the lowest. */
-export const isBestUnitValue = (o: Offer) => unitPrice(o) <= Math.min(...offerConfig.offers.map((x) => unitPrice(x))) + 1e-9;
+export const isBestUnitValue = (o: Offer, list: Offer[] = offerConfig.offers) => unitPrice(o) <= Math.min(...list.map((x) => unitPrice(x))) + 1e-9;
 export const contents = (o: Offer) => `${o.strips} strips${o.includesOnTag ? " + ON Tag" : ""}`;

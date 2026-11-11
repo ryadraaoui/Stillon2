@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CTA, EARLY_ACCESS, NAV } from "@/lib/site";
+import { EARLY_ACCESS, NAV } from "@/lib/site";
 import { Logo } from "./Brand";
 import { useCart } from "./Cart";
 import { getLenis } from "./SmoothScroll";
@@ -33,6 +33,7 @@ export function Header() {
   const toggle = useRef<HTMLButtonElement>(null);
   const menuOpen = useRef(false);
   const live = commerce.mode === "live";
+  const CTA = commerce.mode === "shopify" ? "Get yours" : "Get early access";
 
   useEffect(() => {
     const el = shell.current!;
@@ -218,10 +219,10 @@ export function Header() {
               <Link href={EARLY_ACCESS} className="nav-cta">
                 <span className="max-lg:hidden">{CTA}</span>
                 <span className="max-[379px]:hidden lg:hidden" aria-hidden="true">
-                  Early access
+                  {commerce.mode === "shopify" ? "Get yours" : "Early access"}
                 </span>
                 <span className="hidden max-[379px]:inline" aria-hidden="true">
-                  Access
+                  {commerce.mode === "shopify" ? "Shop" : "Access"}
                 </span>
                 <span className="sr-only lg:hidden">{CTA}</span>
               </Link>

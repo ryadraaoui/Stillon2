@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CTA, EARLY_ACCESS, FORMULA, PRODUCT } from "@/lib/site";
+import { EARLY_ACCESS, FORMULA, PRODUCT } from "@/lib/site";
+import { CtaText } from "./Cart";
 import { Reveal, Line } from "./Reveal";
 import { Sachet } from "./Sachet";
 import { Box3D } from "./Box3D";
@@ -58,7 +59,7 @@ export function Formula() {
 }
 
 /** Section 05. The offer: pick a bundle, a pace, and register. The only signup on the page. */
-export function Conversion({ live }: { live: boolean }) {
+export function Conversion({ live, shop = false }: { live: boolean; shop?: boolean }) {
   return (
     <section id="early-access" className="wrap bg-white py-24 md:py-32">
       <div className="mb-10 flex flex-col justify-between gap-3 md:mb-14 md:flex-row md:items-end">
@@ -82,7 +83,7 @@ export function Conversion({ live }: { live: boolean }) {
           <Purchase source="home" />
         </div>
       ) : (
-        <OfferConfigurator source="home" />
+        <OfferConfigurator source="home" shop={shop} />
       )}
     </section>
   );
@@ -103,7 +104,7 @@ export function Closing() {
         </Reveal>
         <Reveal className="mt-8">
           <Link href={EARLY_ACCESS} className="btn btn-ivory">
-            {CTA}
+            <CtaText />
           </Link>
         </Reveal>
       </div>

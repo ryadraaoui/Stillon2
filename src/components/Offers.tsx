@@ -3,7 +3,8 @@ import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { CTA } from "@/lib/site";
 import { track } from "@/lib/track";
-import { contents, getOffer, isBestUnitValue, money, offerConfig, priceFor, repeatSaving, unitLabel, type Interval, type OfferId, type PurchaseType } from "@/config/offers";
+import { useCart } from "./Cart";
+import { contents, isBestUnitValue, money, offerConfig, priceFor, repeatSaving, unitLabel, type Interval, type OfferId, type PurchaseType } from "@/config/offers";
 import { Box3D } from "./Box3D";
 
 /**
@@ -60,7 +61,13 @@ const seg = "relative flex min-h-[44px] flex-1 cursor-pointer items-center justi
  * One component for the homepage (with the product stage) and the product page (compact, beside the gallery).
  * Prelaunch only: it records interest. It takes no payment and starts no subscription.
  */
-export function OfferConfigurator({ source, stage = true }: { source: string; stage?: boolean }) {
+export function OfferConfigurator({ source, stage = true, shop = false }: { source: string; stage?: boolean; shop?: boolean }) {
+  // In shop mode the bundles, prices and currency come from Shopify; otherwise from the preview configuration.
+  const { commerce } = useCart();
+  const shopData = shop && commerce.mode === "shopify" ? commerce : null;
+  const offers = shopData ? shopData.offers : offerConfig.offers;
+  const currency = shopData ? shopData.currency : offerConfig.currency;
+  const m = (n: number) => money(n, currency);
   const uid = useId();
   const root = useRef<HTMLDivElement>(null);
   const [offerId, setOfferId] = useState<OfferId>(offerConfig.defaultOffer);
@@ -71,10 +78,11 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
   const [state, setState] = useState<"idle" | "busy" | "done" | "error">("idle");
   const [msg, setMsg] = useState("");
 
-  const offer = getOffer(offerId)!;
+  const offer = offers.find((o) => o.id === offerId) ?? offers[0];
   const effType: PurchaseType = offer.subscriptionEligible ? type : "one-time";
   const price = priceFor(offer, effType);
   const saving = repeatSaving(offer);
+  const [shopBusy, setShopBusy] = useState(false);
 
   useEffect(() => {
     const el = root.current;
@@ -96,6 +104,23 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
     setInterval_(d);
     track("frequency_select", { offer: offerId, interval_days: d, source });
   };
+
+  async function checkout() {
+    if (shopBusy) return;
+    setShopBusy(true);
+    setState("idle");
+    track("checkout_start", { offer: offerId, purchase_type: effType, source });
+    try {
+      const res = await fetch("/api/shopify/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ offer: offerId, purchaseType: effType, interval: effType === "repeat" ? interval : undefined }) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.url) throw new Error(data.error ?? "We couldn't start checkout. Nothing was charged.");
+      window.location.assign(data.url);
+    } catch (err) {
+      setState("error");
+      setMsg(err instanceof Error ? err.message : "We couldn't start checkout. Nothing was charged.");
+      setShopBusy(false);
+    }
+  }
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -137,9 +162,9 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
         <fieldset>
           <legend className="sr-only">Choose your bundle</legend>
           <div className="flex flex-col gap-2">
-            {offerConfig.offers.map((o) => {
+            {offers.map((o) => {
               const on = o.id === offerId;
-              const best = o.label === "value" && isBestUnitValue(o);
+              const best = o.label === "value" && isBestUnitValue(o, offers);
               return (
                 <label
                   key={o.id}
@@ -165,9 +190,9 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
                   </span>
                   <span className="text-right">
                     <span className="block text-[24px] leading-none font-black tracking-[-0.03em] tabular-nums sm:text-[26px]" data-price={o.id}>
-                      {money(o.oneTimePrice)}
+                      {m(o.oneTimePrice)}
                     </span>
-                    <span className="mt-2 block text-[11px] font-semibold text-grey tabular-nums">{unitLabel(o)}</span>
+                    <span className="mt-2 block text-[11px] font-semibold text-grey tabular-nums">{unitLabel(o, "one-time", currency)}</span>
                   </span>
                 </label>
               );
@@ -190,7 +215,7 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
               <label className={seg}>
                 <input type="radio" name={`${uid}-type`} value="repeat" checked={effType === "repeat"} onChange={() => pickType("repeat")} className="sr-only" />
                 ON Repeat.
-                {saving > 0 && <span className={`ml-2 text-[11px] font-extrabold tabular-nums ${effType === "repeat" ? "text-pink" : "text-pinkdeep"}`}>−{money(saving)}</span>}
+                {saving > 0 && <span className={`ml-2 text-[11px] font-extrabold tabular-nums ${effType === "repeat" ? "text-pink" : "text-pinkdeep"}`}>−{m(saving)}</span>}
               </label>
             </div>
           ) : (
@@ -220,7 +245,7 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
             </p>
             <p className="text-right leading-none">
               <span className="text-[34px] font-black tracking-[-0.04em] tabular-nums" data-testid="total">
-                {money(price)}
+                {m(price)}
               </span>
               {effType === "repeat" && <span className="ml-1 text-[12px] font-bold text-grey">per delivery</span>}
             </p>
@@ -229,12 +254,30 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
             {offer.line}
           </p>
           <p className="mt-1 text-[12px] leading-relaxed text-grey">
-            {offer.boxes} {offer.boxes === 1 ? "box" : "boxes"} · {offer.strips} strips · {unitLabel(offer, effType)}.
+            {offer.boxes} {offer.boxes === 1 ? "box" : "boxes"} · {offer.strips} strips · {unitLabel(offer, effType, currency)}.
             {offer.includesOnTag && <span data-testid="tag-note"> ON Tag included with your first order.{effType === "repeat" ? " Refills only after your first delivery." : ""}</span>}
             {effType === "repeat" && " Cancellation and account terms will be published before ON Repeat. goes live."}
           </p>
         </div>
 
+        {/* 4 — checkout (Shopify) */}
+        {shopData ? (
+          <div className="mt-5">
+            <button type="button" onClick={checkout} disabled={shopBusy} className="btn btn-ink w-full" data-testid="shop-checkout">
+              {shopBusy ? "Opening secure checkout…" : "Checkout"}
+            </button>
+            {state === "error" && (
+              <p role="alert" className="mt-2 px-1 text-sm font-semibold text-pinkdeep">
+                {msg}
+              </p>
+            )}
+            <p className="mt-4 px-1 text-[11px] leading-relaxed text-grey" data-testid="disclosure">
+              Taxes and shipping are calculated at checkout, which is hosted securely by Shopify.
+              {effType === "repeat" && " ON Repeat. renews at the delivery price shown until you cancel; you can manage or cancel it from your order emails and account."}
+            </p>
+          </div>
+        ) : (
+          <>
         {/* 4 — register */}
         {state === "done" ? (
           <div role="status" className="mt-5 rounded-2xl bg-ink px-6 py-7 text-white" data-testid="confirmation">
@@ -288,6 +331,8 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
               <strong className="font-bold text-ink">You’re early. Good.</strong> Preview pricing in {offerConfig.currency}. Subject to change. This is early access, not a purchase: no payment, no reserved stock, no locked price.
             </p>
           </form>
+        )}
+          </>
         )}
       </div>
     </div>

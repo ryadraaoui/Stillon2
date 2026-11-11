@@ -14,6 +14,7 @@ export type TrackEvent =
   | "offer_select"
   | "purchase_type_select"
   | "frequency_select"
+  | "checkout_start"
   | "early_access_submit"
   | "early_access_success"
   | "early_access_error";

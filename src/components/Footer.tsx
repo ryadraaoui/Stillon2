@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { CTA, EARLY_ACCESS, SITE } from "@/lib/site";
+import { CtaText } from "./Cart";
+import { EARLY_ACCESS, SITE } from "@/lib/site";
 import { Logo } from "./Brand";
 
 export function Footer() {
@@ -36,7 +37,7 @@ export function Footer() {
             </a>
           )}
           <Link href={EARLY_ACCESS} className={`${l} text-pinkdeep`}>
-            {CTA}
+            <CtaText />
           </Link>
         </nav>
       </div>

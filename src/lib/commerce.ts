@@ -1,11 +1,12 @@
 import "server-only";
+import { loadShopifyOffers, type ShopifyCommerce } from "@/lib/shopify";
 
 /**
  * Commerce state. Nothing here is invented: the price is read from Stripe.
  * Without STRIPE_SECRET_KEY + STRIPE_PRICE_ID the site runs in pre-launch mode (launch list instead of cart).
  */
 export type Price = { amount: number; currency: string; formatted: string };
-export type Commerce = { mode: "live"; price: Price } | { mode: "prelaunch" };
+export type Commerce = { mode: "live"; price: Price } | ShopifyCommerce | { mode: "prelaunch" };
 
 export const STRIPE_API = process.env.STRIPE_API_BASE ?? "https://api.stripe.com";
 
@@ -33,6 +34,9 @@ export async function stripe(path: string, init?: { method?: string; body?: URLS
 }
 
 export async function getCommerce(): Promise<Commerce> {
+  // Shopify wins when it is explicitly enabled and fully configured; otherwise Stripe if configured; otherwise prelaunch.
+  const shop = await loadShopifyOffers();
+  if (shop) return shop;
   if (!stripeConfigured()) return { mode: "prelaunch" };
   try {
     const price = await stripe(`prices/${process.env.STRIPE_PRICE_ID}`, { revalidate: 300 });

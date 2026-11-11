@@ -17,6 +17,11 @@ type Ctx = {
   close: () => void;
 };
 const CartCtx = createContext<Ctx | null>(null);
+/** The primary call to action: "Get early access" in prelaunch, "Get yours" once Shopify checkout is on. */
+export function CtaText() {
+  const { commerce } = useCart();
+  return <>{commerce.mode === "shopify" ? "Get yours" : "Get early access"}</>;
+}
 export const useCart = () => {
   const c = useContext(CartCtx);
   if (!c) throw new Error("useCart outside CartProvider");

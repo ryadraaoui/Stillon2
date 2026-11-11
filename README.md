@@ -21,6 +21,10 @@ Copy `.env.example` to `.env.local` and fill in what you have. With nothing set 
 - `/checkout/success` — confirms an order only when Stripe reports the session as paid
 - `/api/checkout`, `/api/notify`, `sitemap.xml`, `robots.txt`
 
+## Shopify
+
+Headless Storefront API integration, built and tested against a mock, off by default. See `docs/SHOPIFY.md`.
+
 ## Prelaunch vs live
 
 With no Stripe variables the site is in prelaunch: every primary CTA is "Get early access" and leads to the one signup form.

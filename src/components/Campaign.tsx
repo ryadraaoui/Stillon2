@@ -4,7 +4,8 @@ import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { CTA, EARLY_ACCESS } from "@/lib/site";
+import { CtaText } from "./Cart";
+import { EARLY_ACCESS } from "@/lib/site";
 import { Logo } from "./Brand";
 import { Sachet } from "./Sachet";
 import cyclist from "@/assets/bw-cyclist.webp";
@@ -110,7 +111,7 @@ export function Campaign() {
         <div className={`flex ${H} w-[80vw] flex-col justify-center gap-8 md:w-[34vw] md:pl-8`}>
           <p className="max-w-[16ch] text-2xl leading-tight font-black md:text-4xl">Goes where you go. Fits in a pocket.</p>
           <Link href={EARLY_ACCESS} className="btn btn-ink self-start">
-            {CTA}
+            <CtaText />
           </Link>
         </div>
       </div>

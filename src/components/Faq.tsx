@@ -1,9 +1,11 @@
 "use client";
 import { useState } from "react";
 import { FAQ } from "@/lib/site";
+import { useCart } from "./Cart";
 
 export function Faq({ limit, heading = true }: { limit?: number; heading?: boolean }) {
   const [open, setOpen] = useState<number | null>(0);
+  const { commerce } = useCart();
   const items = limit ? FAQ.slice(0, limit) : FAQ;
   return (
     <section id="faq" className="wrap bg-ivory py-24 md:py-36">
@@ -29,7 +31,7 @@ export function Faq({ limit, heading = true }: { limit?: number; heading?: boole
                 </h3>
                 <div id={`faq-p-${i}`} role="region" aria-labelledby={`faq-b-${i}`} inert={!on} className={`grid transition-[grid-template-rows,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${on ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
                   <div className="overflow-hidden">
-                    <p className="max-w-[58ch] pb-7 text-[17px] text-grey">{f.a}</p>
+                    <p className="max-w-[58ch] pb-7 text-[17px] text-grey">{f.q === "Can I buy it now?" && commerce.mode === "shopify" ? "Yes. Choose a bundle, then check out securely through Shopify. Shipping and taxes are shown before you pay." : f.a}</p>
                   </div>
                 </div>
               </div>

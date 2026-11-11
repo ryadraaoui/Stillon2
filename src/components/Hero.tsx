@@ -3,7 +3,8 @@ import { useLayoutEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
-import { CTA, EARLY_ACCESS } from "@/lib/site";
+import { CtaText } from "./Cart";
+import { EARLY_ACCESS } from "@/lib/site";
 import { track } from "@/lib/track";
 import { MESSAGE } from "@/config/copy";
 import { Sachet } from "./Sachet";
@@ -85,7 +86,7 @@ export function Hero() {
           </p>
           <div data-h-cta className="flex flex-wrap gap-2 sm:gap-3">
             <Link href={EARLY_ACCESS} className="btn btn-compact btn-ink" onClick={() => track("hero_cta_click", { cta: "early_access" })}>
-              {CTA}
+              <CtaText />
             </Link>
             <Link href="/#strips" className="btn btn-compact btn-line" onClick={() => track("product_discovery", { from: "hero" })}>
               Discover the strips
