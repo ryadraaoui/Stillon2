@@ -9,11 +9,8 @@ export function Faq({ limit, heading = true }: { limit?: number; heading?: boole
     <section id="faq" className="wrap bg-ivory py-24 md:py-36">
       <div className="grid gap-10 md:grid-cols-[1fr_1.6fr] md:gap-20">
         {heading && (
-          <h2 className="display text-[15vw] md:sticky md:top-28 md:self-start md:text-[7.2vw]">
-            Asked.
-            <br />
-            <span className="display-italic">Answered</span>
-            <span className="text-pink">.</span>
+          <h2 className="display text-[15vw] md:sticky md:top-28 md:self-start md:text-[6vw]">
+            Questions<span className="text-pink">.</span>
           </h2>
         )}
         <div className="border-t-2 border-ink">

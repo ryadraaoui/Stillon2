@@ -8,7 +8,7 @@ import rOpen from "@/assets/render-open.webp";
 import rFan from "@/assets/render-fan.webp";
 import rSide from "@/assets/render-side.webp";
 import rStrip from "@/assets/render-strip.webp";
-import inHand from "@/assets/gen-strip.webp";
+import inHand from "@/assets/bw-strip-hand.webp";
 
 type View = { id: string; label: string; bg: string } & ({ kind: "box" | "front" | "back" } | { kind: "img"; src: StaticImageData; alt: string; fit?: string });
 const VIEWS: View[] = [
@@ -17,7 +17,7 @@ const VIEWS: View[] = [
   { id: "back", kind: "back", label: "Sachet, back", bg: "bg-bone" },
   { id: "open", kind: "img", label: "Torn open", bg: "bg-pink", src: rOpen, alt: "Render: the sachet torn open on a pink background, the white strip rising out of the top.", fit: "object-cover" },
   { id: "scale", kind: "img", label: "To scale", bg: "bg-[#e6e3de]", src: rBox, alt: "Render: the box, 80 × 35 × 110 mm, beside two 5 × 7 cm sachets, to scale.", fit: "object-cover" },
-  { id: "side", kind: "img", label: "Side, ~2 mm", bg: "bg-[#e8e4de]", src: rSide, alt: "Render: the sachet seen edge-on, about 2 mm thick.", fit: "object-cover" },
+  { id: "side", kind: "img", label: "Side", bg: "bg-[#e8e4de]", src: rSide, alt: "Render: the sachet seen edge-on.", fit: "object-cover" },
   { id: "fan", kind: "img", label: "Three, fanned", bg: "bg-[#131313]", src: rFan, alt: "Render: three sachets fanned out on black.", fit: "object-cover" },
   { id: "hand", kind: "img", label: "In hand", bg: "bg-[#e9e3db]", src: inHand, alt: "A hand with one pink nail holds the small white strip up beside an athlete's chin. Direct flash.", fit: "object-cover" },
   { id: "strip", kind: "img", label: "The strip", bg: "bg-[#f6f3ee]", src: rStrip, alt: "Render: the strip itself, a small white film with nothing printed on it.", fit: "object-cover" },
@@ -43,7 +43,7 @@ export function PdpGallery() {
           </div>
         ))}
         <p className="eyebrow absolute bottom-4 left-4 rounded-full bg-ivory/90 px-3 py-2 text-ink backdrop-blur">
-          <span className="text-pinktext">
+          <span className="text-ink/60">
             {String(i + 1).padStart(2, "0")}/{String(VIEWS.length).padStart(2, "0")}
           </span>{" "}
           {v.label}
@@ -61,9 +61,11 @@ export function PdpGallery() {
             onClick={() => setI(n)}
             className={`relative grid h-[76px] w-[62px] flex-none place-items-center overflow-hidden rounded-lg transition-shadow md:h-[92px] md:w-full ${view.bg} ${n === i ? "ring-2 ring-ink ring-offset-2 ring-offset-ivory" : "opacity-70 hover:opacity-100"}`}
           >
-            {view.kind === "box" && <span className="text-[10px] font-black">BOX</span>}
-            {view.kind === "front" && <Sachet className="w-[52%]" label="" />}
-            {view.kind === "back" && <Sachet side="back" className="w-[52%]" label="" />}
+            <span aria-hidden="true" className="contents">
+              {view.kind === "box" && <span className="text-[10px] font-black">BOX</span>}
+              {view.kind === "front" && <Sachet className="w-[52%]" label="" />}
+              {view.kind === "back" && <Sachet side="back" className="w-[52%]" label="" />}
+            </span>
             {view.kind === "img" && <Image src={view.src} alt="" fill sizes="80px" className="object-cover" />}
           </button>
         ))}

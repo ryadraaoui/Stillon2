@@ -168,7 +168,7 @@ function CartDrawer() {
               <br />
               here<span className="text-pink">.</span>
             </p>
-            <p className="max-w-[28ch] text-grey">Your cart is empty. The day isn&apos;t done, though.</p>
+            <p className="max-w-[28ch] text-grey">Your cart is empty.</p>
             <a href="/products/energy-strips" className="btn btn-ink" onClick={close}>
               See the strips
             </a>
@@ -206,7 +206,7 @@ function CartDrawer() {
               </div>
               <p className="mt-1 text-xs text-grey">Shipping and taxes are calculated at checkout.</p>
               {error && (
-                <p role="alert" className="mt-3 rounded-md bg-pink/10 px-3 py-2 text-sm font-semibold text-pinktext">
+                <p role="alert" className="mt-3 rounded-md bg-pink/10 px-3 py-2 text-sm font-semibold text-pinkdeep">
                   {error}
                 </p>
               )}

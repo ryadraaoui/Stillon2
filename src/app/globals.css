@@ -6,6 +6,7 @@
   --color-bone: #e9e5df;
   --color-pink: #ff006e;
   --color-pinktext: #e0005f;
+  --color-pinkdeep: #c20050; /* small text on ivory/bone, AA contrast */
   --color-ink: #111111;
   --color-grey: #4a4642;
   --font-sans: "Inter Tight Variable", "Inter Tight", "Helvetica Neue", Arial, sans-serif;

@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { NAV } from "@/lib/site";
+import { CTA, EARLY_ACCESS, NAV } from "@/lib/site";
 import { Logo } from "./Brand";
 import { useCart } from "./Cart";
 import { getLenis } from "./SmoothScroll";
@@ -64,8 +64,8 @@ export function Header() {
         </span>
       </button>
     ) : (
-      <Link href="/#list" className="eyebrow flex h-11 items-center rounded-full bg-ink px-5 text-ivory transition-colors hover:bg-pink">
-        Launch list
+      <Link href={EARLY_ACCESS} className="eyebrow flex h-11 items-center rounded-full bg-ink px-4 text-ivory transition-colors hover:bg-pink sm:px-5">
+        {CTA}
       </Link>
     );
 
@@ -125,7 +125,7 @@ export function Header() {
             </Link>
           ))}
         </nav>
-        <p className="eyebrow text-grey">Caffeine + L-theanine energy strip · Montréal</p>
+        <p className="eyebrow text-grey">Energy strips with caffeine + L-theanine</p>
       </div>
     </>
   );

@@ -1,229 +1,137 @@
 import Image from "next/image";
 import Link from "next/link";
-import { FORMULA, PRODUCT } from "@/lib/site";
-import { Censor, Logo } from "./Brand";
+import { CTA, EARLY_ACCESS, FORMULA, PRODUCT } from "@/lib/site";
 import { Reveal, Line } from "./Reveal";
-import { Sachet, Strip } from "./Sachet";
+import { Sachet } from "./Sachet";
 import { Box3D } from "./Box3D";
-import { NotifyForm, Purchase } from "./Purchase";
-import shades from "@/assets/campaign-shades.webp";
+import { Purchase } from "./Purchase";
+import cyclist from "@/assets/bw-cyclist.webp";
+import boxer from "@/assets/bw-boxer.webp";
+import runner from "@/assets/bw-runner.webp";
+import closing from "@/assets/bw-closing.webp";
 
-export function Marquee({ items, className = "", dur = 30 }: { items: React.ReactNode[]; className?: string; dur?: number }) {
-  const row = (hidden: boolean) => (
-    <div className="flex flex-none items-center" aria-hidden={hidden || undefined}>
-      {items.map((it, i) => (
-        <span key={i} className="flex items-center">
-          <span className="px-[0.5em]">{it}</span>
-          <span className="inline-block h-[0.22em] w-[0.22em] rounded-full bg-pink" />
-        </span>
-      ))}
-    </div>
-  );
+/** Section 03. Three frames, one campaign: a dominant cyclist with boxer and runner in an offset pair. */
+export function Campaign() {
+  const tag = "eyebrow absolute bottom-3 left-3 rounded-full bg-white/90 px-3 py-1.5 backdrop-blur";
   return (
-    <div className={`overflow-hidden ${className}`}>
-      <div className="marquee-track" style={{ "--dur": `${dur}s` } as React.CSSProperties}>
-        {row(false)}
-        {row(true)}
+    <section id="campaign" aria-label="Campaign" className="wrap bg-white py-24 md:py-36">
+      <div className="grid gap-4 md:grid-cols-12 md:gap-5">
+        <Reveal as="figure" variant="rv-img" className="relative aspect-[1122/1290] overflow-hidden md:col-span-6 md:row-span-2">
+          <Image src={cyclist} alt="Black-and-white, direct flash: a cyclist in a silver helmet and dark wraparound glasses stares into the lens, jersey soaked." fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
+          <figcaption className={tag}>Cyclist</figcaption>
+        </Reveal>
+        <div className="max-md:order-first md:col-span-6 md:pb-6 md:pl-6">
+          <Reveal as="h2" variant="lines" className="display display-italic text-[17vw] md:text-[8.2vw]">
+            <Line>Not made</Line>
+            <Line delay={90}>
+              to stop<span className="text-pink">.</span>
+            </Line>
+          </Reveal>
+        </div>
+        <Reveal as="figure" variant="rv-img" delay={120} className="relative aspect-[4/5] self-start overflow-hidden max-md:col-span-1 max-md:w-[58%] md:col-span-3 md:col-start-7">
+          <Image src={boxer} alt="Black-and-white, direct flash: a boxer sits forward between rounds, hands wrapped, one pink band at the wrist, a white strip held between two fingers." fill sizes="(max-width: 768px) 58vw, 25vw" className="object-cover" />
+          <figcaption className={tag}>Boxer</figcaption>
+        </Reveal>
+        <Reveal as="figure" variant="rv-img" delay={240} className="relative aspect-[4/5] self-start overflow-hidden max-md:-mt-[18%] max-md:ml-auto max-md:w-[52%] md:col-span-3 md:mt-24">
+          <Image src={runner} alt="Black-and-white, direct flash: a sprinter runs straight at the camera, both feet off the ground, a blank pink bib on her top." fill sizes="(max-width: 768px) 52vw, 25vw" className="object-cover object-top" />
+          <figcaption className={tag}>Runner</figcaption>
+        </Reveal>
       </div>
-    </div>
-  );
-}
-
-export function HowItWorks() {
-  const num = "text-[84px] leading-none font-black text-pinktext md:text-[120px]";
-  const card = "relative flex min-h-[480px] flex-col overflow-hidden rounded-2xl md:min-h-[620px]";
-  return (
-    <section id="how" className="wrap bg-ivory py-24 md:py-36">
-      <div className="mb-12 flex flex-col justify-between gap-6 md:mb-16 md:flex-row md:items-end">
-        <Reveal as="h2" variant="lines" className="display text-[15vw] md:text-[8.4vw]">
-          <Line>Three steps.</Line>
-          <Line delay={90}>
-            Two are <span className="display-italic">easy</span>
-            <span className="text-pink">.</span>
-          </Line>
-        </Reveal>
-        <Reveal className="max-w-[34ch] text-[17px] text-grey">It&apos;s printed on the back of every sachet, in case you forget. You won&apos;t.</Reveal>
-      </div>
-      <ol className="grid gap-4 md:grid-cols-3">
-        <Reveal as="li" className={`${card} bg-bone`}>
-          <div className="p-6 md:p-8">
-            <span className={num}>1</span>
-            <h3 className="display mt-2 text-4xl md:text-5xl">Ouvre.</h3>
-            <p className="mt-1 text-grey">open.</p>
-          </div>
-          <div className="relative mt-auto flex justify-center px-10 pb-0">
-            <Strip className="absolute top-[-16%] z-0 w-[26%] rotate-[4deg]" />
-            <Sachet open className="relative z-10 w-[62%] translate-y-[14%] rotate-[-4deg]" label="An opened Still ON. sachet with the white strip coming out of the top" />
-          </div>
-        </Reveal>
-        <Reveal as="li" delay={120} className={`${card} bg-[#eae1dc]`}>
-          <Image src={shades} alt="A woman in pink-tinted glasses places the clear-white strip on her tongue with one finger." fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover object-[50%_30%] transition-transform duration-[1.2s] ease-out hover:scale-[1.04]" />
-          <div className="relative p-6 md:p-8">
-            <span className={num}>2</span>
-          </div>
-          <div className="relative mt-auto bg-gradient-to-t from-ink/70 to-transparent p-6 pt-20 text-ivory md:p-8 md:pt-24">
-            <h3 className="display text-4xl md:text-5xl">Sur la langue.</h3>
-            <p className="mt-1 text-ivory/80">on the tongue. Let it dissolve.</p>
-          </div>
-        </Reveal>
-        <Reveal as="li" delay={240} className={`${card} bg-ink text-ivory`}>
-          <div className="p-6 md:p-8">
-            <span className={`${num} !text-ivory`}>3</span>
-          </div>
-          <div className="mt-auto p-6 md:p-8">
-            <h3 className="display display-italic text-[150px] leading-[0.8] text-pink md:text-[13vw]">On.</h3>
-            <p className="mt-4 text-ivory/70">That&apos;s it. Go be somewhere.</p>
-          </div>
-        </Reveal>
-      </ol>
     </section>
   );
 }
 
-/** Credit card vs sachet vs strip, drawn to true relative scale (1 mm = 1 unit). */
-export function ScaleCompare() {
-  return (
-    <figure className="rounded-2xl bg-bone p-6 md:p-10">
-      <svg viewBox="0 0 190 84" className="h-auto w-full" role="img" aria-label="To scale: a credit card is 85.6 by 54 millimetres, the sachet is 50 by 70 millimetres, the strip is about 22 by 32 millimetres.">
-        <rect x="1" y="15" width="85.6" height="54" rx="3.2" fill="none" stroke="#111" strokeWidth=".5" strokeDasharray="1.6 1.4" />
-        <text x="5" y="23" fontSize="3.4" fontWeight="700" fill="#4a4642">CREDIT CARD</text>
-        <text x="5" y="64" fontSize="3.2" fill="#4a4642">85.6 × 54 mm</text>
-        <rect x="100" y="7" width="50" height="70" rx="1" fill="#f7f3ee" stroke="#111" strokeWidth=".5" />
-        <line x1="100" y1="12" x2="150" y2="12" stroke="#ff006e" strokeWidth=".5" strokeDasharray="1.4 1" />
-        <text x="104" y="22" fontSize="3.4" fontWeight="800" fill="#111">SACHET</text>
-        <text x="104" y="72" fontSize="3.2" fill="#4a4642">50 × 70 mm</text>
-        <rect x="163" y="26" width="22" height="32" rx="1.6" fill="#fff" stroke="#111" strokeWidth=".4" />
-        <text x="163" y="23" fontSize="3.4" fontWeight="800" fill="#111">STRIP</text>
-        <text x="163" y="64" fontSize="3.2" fill="#4a4642">~22 × 32 mm</text>
-      </svg>
-      <figcaption className="eyebrow mt-5 text-grey">To scale. Smaller than a credit card. Fits where a can doesn&apos;t.</figcaption>
-    </figure>
-  );
-}
-
+/** Section 04. The formula as printed on pack: two leads set large, the rest in one line. */
 export function Formula() {
+  const [caf, the, b6, b12] = FORMULA;
   return (
     <section id="formula" className="wrap bg-ivory py-24 md:py-36">
-      <div className="grid gap-12 md:grid-cols-[1fr_1.25fr] md:gap-20">
-        <div className="md:sticky md:top-28 md:self-start">
-          <p className="eyebrow mb-5 text-grey">Per strip · Par bandelette</p>
-          <Reveal as="h2" variant="lines" className="display text-[15vw] md:text-[7.2vw]">
-            <Line>Four things.</Line>
+      <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+        <div>
+          <p className="eyebrow mb-4 text-grey">What&apos;s inside · Per strip</p>
+          <Reveal as="h2" variant="lines" className="display text-[13vw] md:text-[6.4vw]">
+            <Line>Two leads.</Line>
             <Line delay={90}>
-              No <span className="display-italic">mystery</span>
+              <span className="display-italic">One idea</span>
               <span className="text-pink">.</span>
             </Line>
           </Reveal>
-          <Reveal className="mt-6 max-w-[38ch] text-[17px] text-grey">
-            The whole formula fits on the back of a 5 × 7 cm sachet. So does the flavour: <strong className="text-ink">{PRODUCT.flavourFr.toLowerCase()} · mint</strong>.
-          </Reveal>
-          <Reveal className="mt-10 hidden md:block">
-            <ScaleCompare />
-          </Reveal>
         </div>
-        <div>
-          <dl className="border-t-2 border-ink">
-            {FORMULA.map((f, i) => (
-              <Reveal key={f.en} delay={i * 70} className="group grid grid-cols-[auto_1fr] items-baseline gap-x-6 border-b border-ink/15 py-7 md:py-9">
-                <dd className="order-1 text-[19vw] leading-[0.8] font-black tracking-[-0.06em] tabular-nums transition-colors duration-500 group-hover:text-pink md:text-[9.5vw]">
-                  {f.amount}
-                  <span className="ml-1 text-[0.24em] font-extrabold tracking-normal">{f.unit}</span>
-                </dd>
-                <dt className="order-2 justify-self-end text-right">
-                  <span className="block text-xl font-black uppercase md:text-2xl">{f.en}</span>
-                  <span className="block text-sm text-grey">{f.fr}</span>
-                </dt>
-                <dd className="order-3 col-span-2 mt-4 max-w-[52ch] text-[15px] text-grey">{f.note}</dd>
-              </Reveal>
-            ))}
-          </dl>
-          <p className="mt-5 text-xs text-grey">Amounts as printed on pack. Contains caffeine. Not a substitute for sleep, whatever our posters say.</p>
-          <div className="mt-10 md:hidden">
-            <ScaleCompare />
-          </div>
-        </div>
+        <Link href="/products/energy-strips" className="eyebrow link-u self-start md:self-end">
+          Complete product information →
+        </Link>
       </div>
+      <dl className="mt-12 grid border-t-2 border-ink md:mt-16 md:grid-cols-2">
+        {[caf, the].map((f, i) => (
+          <Reveal key={f.en} delay={i * 100} className={`py-8 md:py-12 ${i === 1 ? "max-md:border-t max-md:border-ink/15 md:border-l md:border-ink/15 md:pl-12" : "md:pr-12"}`}>
+            <dd className="text-[30vw] leading-[0.78] font-black tracking-[-0.06em] tabular-nums md:text-[15vw]">
+              {f.amount}
+              <span className="ml-1 text-[0.2em] font-extrabold tracking-normal">{f.unit}</span>
+            </dd>
+            <dt className="mt-5 text-2xl font-black uppercase md:text-3xl">
+              {f.en} <span className="text-base font-medium text-grey normal-case">/ {f.fr}</span>
+            </dt>
+            <dd className="mt-2 max-w-[40ch] text-[15px] text-grey">{f.note}</dd>
+          </Reveal>
+        ))}
+      </dl>
+      <p className="border-t border-ink/15 pt-6 text-[15px] font-bold">
+        Also in every strip: vitamin B6 {b6.amount} {b6.unit} · vitamin B12 {b12.amount} {b12.unit} · {PRODUCT.flavourEn.toLowerCase()} flavour.
+      </p>
+      <p className="mt-2 text-xs text-grey">Amounts as printed on pack. Contains caffeine. Read the label before use.</p>
     </section>
   );
 }
 
-export function ShopSection() {
+/** Section 05. The one signup on the page. Hero, header, closing and footer CTAs all land here. */
+export function Conversion() {
   return (
-    <section id="shop" className="wrap bg-bone py-24 md:py-36">
+    <section id="early-access" className="wrap scroll-mt-[var(--header-h)] bg-bone py-24 md:py-36">
       <div className="grid items-center gap-14 md:grid-cols-2 md:gap-10">
-        <Reveal className="relative mx-auto flex w-full max-w-[560px] items-end justify-center gap-[4%] py-6">
-          <Box3D className="w-[44%]" />
-          <Sachet className="mb-[2%] w-[22%] rotate-[-5deg]" />
-          <Sachet side="back" className="mb-[1%] -ml-[6%] w-[22%] rotate-[7deg]" label="Back of the sachet: 1 ouvre, 2 sur la langue, 3 ON. Caffeine 50 mg, L-theanine 30 mg, vitamin B6 1.3 mg, vitamin B12 20 mcg, mint." />
+        <Reveal className="relative mx-auto flex w-full max-w-[540px] items-end justify-center gap-[4%] py-6">
+          <Box3D className="w-[46%]" />
+          <Sachet className="mb-[2%] w-[23%] rotate-[-5deg]" />
+          <Sachet side="back" className="mb-[1%] -ml-[6%] w-[23%] rotate-[7deg]" label="Back of the sachet: the three steps and the formula." />
         </Reveal>
         <div>
           <p className="eyebrow mb-5 text-grey">
-            {PRODUCT.number} · {PRODUCT.flavourFr} · {PRODUCT.flavourEn}
+            {PRODUCT.number} · {PRODUCT.nameEn} · {PRODUCT.flavourEn}
           </p>
-          <Reveal as="h2" variant="lines" className="display text-[14vw] md:text-[6.6vw]">
-            <Line>Thirty strips.</Line>
+          <Reveal as="h2" variant="lines" className="display text-[12.5vw] md:text-[5.6vw]">
+            <Line>Your next move</Line>
             <Line delay={90}>
-              One box<span className="text-pink">.</span>
+              <span className="display-italic">starts here</span>
+              <span className="text-pink">.</span>
             </Line>
           </Reveal>
           <Reveal className="mt-6 max-w-[40ch] text-[17px] text-grey">
-            {PRODUCT.nameFr}. Thirty individually sealed sachets in a box the size of your palm: {PRODUCT.box.w} × {PRODUCT.box.d} × {PRODUCT.box.h} mm. <Censor className="font-black text-ink" /> <strong className="text-ink">l&apos;ordinaire.</strong>
+            {PRODUCT.nameFr}. Thirty dissolvable strips with caffeine + L-theanine, each sealed in its own 5 × 7 cm sachet.
           </Reveal>
-          <ul className="mt-7 grid max-w-md grid-cols-2 gap-x-6 gap-y-3 text-sm font-bold">
-            {["50 mg caffeine", "30 mg L-theanine", "Mint", "Dissolves on the tongue", "30 sealed sachets", "No water needed"].map((t) => (
-              <li key={t} className="flex items-center gap-2.5 border-t border-ink/15 pt-3">
-                {t}
-              </li>
-            ))}
-          </ul>
-          <div className="mt-9">
-            <Purchase source="home-shop" />
+          <div className="mt-8">
+            <Purchase source="home" />
           </div>
-          <Link href="/products/energy-strips" className="eyebrow link-u mt-7 inline-block">
-            Full product details →
-          </Link>
         </div>
       </div>
     </section>
   );
 }
 
-export function Community() {
-  return (
-    <section id="list" className="relative overflow-hidden bg-ink py-24 text-ivory md:py-36">
-      <div className="wrap grid gap-12 md:grid-cols-[1.3fr_1fr] md:items-end">
-        <div>
-          <p className="eyebrow mb-5 text-ivory/60">The list</p>
-          <Reveal as="h2" variant="lines" className="display text-[17vw] md:text-[9.6vw]">
-            <Line>Stay</Line>
-            <Line delay={90}>
-              <span className="display-italic text-pink">on.</span>
-            </Line>
-          </Reveal>
-        </div>
-        <Reveal>
-          <p className="mb-6 max-w-[40ch] text-[17px] text-ivory/75">Drops, restocks and the occasional bad idea at 2 a.m. One list. People who are still up. No daily emails. We&apos;re tired of those too.</p>
-          <NotifyForm source="home-list" dark cta="I'm in" />
-        </Reveal>
-      </div>
-      <Marquee className="display mt-20 text-[13vw] text-ivory/10 md:text-[8vw]" dur={40} items={["still on", "encore là", "not done yet", "pas fini", "still on", "open late"]} />
-    </section>
-  );
-}
-
+/** Section 06. The closing frame. No new information. */
 export function Closing() {
   return (
-    <section className="relative overflow-hidden bg-pink py-28 text-white md:py-44">
-      <div className="wrap flex flex-col items-center text-center">
-        <Reveal as="h2" variant="lines" className="display text-[22vw] md:text-[15.5vw]">
+    <section className="grid overflow-hidden bg-pink text-white md:grid-cols-[1fr_38%]">
+      <div className="relative h-[78vw] md:order-last md:h-auto">
+        <Image src={closing} alt="" fill sizes="(max-width: 768px) 100vw, 38vw" className="object-cover object-[50%_22%]" />
+      </div>
+      <div className="wrap flex flex-col justify-end py-14 md:min-h-[86svh] md:py-20">
+        <Reveal as="h2" variant="lines" className="display display-italic text-[20vw] md:text-[13vw]">
           <Line>The day</Line>
           <Line delay={90}>isn’t</Line>
           <Line delay={180}>done.</Line>
         </Reveal>
-        <Reveal className="mt-10 flex flex-col items-center gap-5">
-          <p className="max-w-[30ch] text-lg font-semibold">Neither are you. Caffeine + L-theanine energy strips, N°01.</p>
-          <Link href="/products/energy-strips" className="btn btn-ivory">
-            Get the strips
+        <Reveal className="mt-8">
+          <Link href={EARLY_ACCESS} className="btn btn-ivory">
+            {CTA}
           </Link>
         </Reveal>
       </div>
@@ -231,33 +139,20 @@ export function Closing() {
   );
 }
 
-export function Manifesto() {
+/** Credit card vs sachet, drawn to true relative scale (1 mm = 1 unit). Product page only. */
+export function ScaleCompare() {
   return (
-    <section className="wrap bg-ivory py-24 md:py-40">
-      <div className="grid gap-10 md:grid-cols-[auto_1fr] md:gap-24">
-        <p className="eyebrow text-grey md:pt-4">Manifesto</p>
-        <div data-manifesto className="max-w-[20ch] text-[9.6vw] leading-[0.98] font-black tracking-[-0.04em] md:max-w-[19ch] md:text-[5.6vw]">
-          {"Tired is not a personality. The day isn’t done at 3 p.m., or at 6, or when the group chat gives up. We made something small for people with big plans.".split(" ").map((w, i) => (
-            <span key={i} data-w className="inline-block pr-[0.22em]">
-              {w}
-            </span>
-          ))}
-          <span data-w className="inline-block">
-            <Censor className="text-ink" />
-            &nbsp;
-          </span>
-          <span data-w className="inline-block text-pink">
-            the&nbsp;
-          </span>
-          <span data-w className="inline-block text-pink">
-            ordinary.
-          </span>
-        </div>
-      </div>
-      <div className="mt-16 flex flex-wrap items-center gap-x-10 gap-y-4 md:mt-24 md:pl-[calc(6rem+70px)]">
-        <Logo decorative className="h-7 w-auto" />
-        <p className="eyebrow text-grey">Caffeine + L-theanine energy strip · Mint · Montréal</p>
-      </div>
-    </section>
+    <figure className="rounded-2xl bg-bone p-6 md:p-10">
+      <svg viewBox="0 0 156 84" className="h-auto w-full" role="img" aria-label="To scale: a credit card is 85.6 by 54 millimetres, the sachet is 50 by 70 millimetres.">
+        <rect x="1" y="15" width="85.6" height="54" rx="3.2" fill="none" stroke="#111" strokeWidth=".5" strokeDasharray="1.6 1.4" />
+        <text x="5" y="23" fontSize="3.6" fontWeight="700" fill="#4a4642">CREDIT CARD</text>
+        <text x="5" y="64" fontSize="3.4" fill="#4a4642">85.6 × 54 mm</text>
+        <rect x="102" y="7" width="50" height="70" rx="1" fill="#f7f3ee" stroke="#111" strokeWidth=".5" />
+        <line x1="102" y1="12" x2="152" y2="12" stroke="#ff006e" strokeWidth=".5" strokeDasharray="1.4 1" />
+        <text x="106" y="22" fontSize="3.6" fontWeight="800" fill="#111">SACHET</text>
+        <text x="106" y="72" fontSize="3.4" fill="#4a4642">50 × 70 mm</text>
+      </svg>
+      <figcaption className="eyebrow mt-5 text-grey">To scale. Smaller than a credit card.</figcaption>
+    </figure>
   );
 }

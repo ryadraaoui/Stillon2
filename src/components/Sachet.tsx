@@ -88,7 +88,7 @@ export const Sachet = forwardRef<HTMLDivElement, Props>(function Sachet({ classN
   );
 });
 
-/** The strip itself: ~22 × 32 mm, white, matte, nothing printed on it (REF-07). */
+/** The strip itself: white, matte, nothing printed on it (REF-07). Drawn at the reference-pack proportions; dimensions await the manufacturer file. */
 export const Strip = forwardRef<HTMLDivElement, { className?: string; style?: React.CSSProperties } & Record<`data-${string}`, string | boolean>>(function Strip({ className = "", style, ...rest }, ref) {
   return (
     <div

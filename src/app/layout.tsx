@@ -13,12 +13,12 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
-  title: { default: "Still ON. — Caffeine + L-theanine energy strips", template: "%s — Still ON." },
-  description: "The day isn't done. Still ON. is a caffeine + L-theanine energy strip: one small white mint strip, on your tongue. 50 mg caffeine, 30 mg L-theanine. 30 to a box. From Montréal.",
+  title: { default: "Still ON. — Energy strips with caffeine + L-theanine", template: "%s — Still ON." },
+  description: "The day isn't done. Still ON. makes dissolvable energy strips with caffeine + L-theanine. Mint. 30 to a box. Get early access.",
   applicationName: "Still ON.",
   alternates: { canonical: "/" },
-  openGraph: { type: "website", siteName: "Still ON.", title: "Still ON. — The day isn't done.", description: "Caffeine + L-theanine energy strips. Open. Strip. ON.", locale: "en_CA", url: "/" },
-  twitter: { card: "summary_large_image", title: "Still ON. — The day isn't done.", description: "Caffeine + L-theanine energy strips. Open. Strip. ON." },
+  openGraph: { type: "website", siteName: "Still ON.", title: "Still ON. — The day isn't done.", description: "Dissolvable energy strips with caffeine + L-theanine. Get early access.", locale: "en_CA", url: "/" },
+  twitter: { card: "summary_large_image", title: "Still ON. — The day isn't done.", description: "Dissolvable energy strips with caffeine + L-theanine. Get early access." },
 };
 export const viewport: Viewport = { themeColor: "#f7f3ee", width: "device-width", initialScale: 1 };
 

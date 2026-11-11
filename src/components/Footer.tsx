@@ -1,41 +1,57 @@
 import Link from "next/link";
-import { NAV, SITE } from "@/lib/site";
+import { CTA, EARLY_ACCESS, SITE } from "@/lib/site";
 import { Logo } from "./Brand";
 
 export function Footer() {
+  const links: [string, string][] = [
+    ["/products/energy-strips", "The strips"],
+    ["/story", "Our story"],
+    ["/faq", "FAQ"],
+    ["/shipping", "Shipping & returns"],
+  ];
+  const l = "link-u py-1 text-sm font-bold";
   return (
-    <footer className="wrap border-t border-ink/10 bg-ivory pt-14 pb-8">
-      <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+    <footer className="wrap bg-ivory pt-12 pb-8">
+      <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
         <div>
-          <p className="display text-3xl md:text-4xl">
-            Open. Strip. <span className="text-pink">On.</span>
-          </p>
-          <p className="mt-4 max-w-[36ch] text-sm text-grey">Caffeine + L-theanine energy strips. Mint. 30 to a box. From {SITE.city}.</p>
+          <Link href="/" aria-label="Still ON. — home">
+            <Logo decorative className="h-8 w-auto" />
+          </Link>
+          <p className="mt-3 text-sm text-grey">{SITE.tagline}.</p>
         </div>
-        <nav aria-label="Footer" className="flex flex-col items-start gap-2">
-          <p className="eyebrow mb-2 text-grey">Explore</p>
-          {NAV.map((n) => (
-            <Link key={n.href} href={n.href} className="link-u text-[15px] font-bold">
-              {n.label}
+        <nav aria-label="Footer" className="flex flex-wrap gap-x-7 gap-y-1">
+          {links.map(([h, t]) => (
+            <Link key={h} href={h} className={l}>
+              {t}
             </Link>
           ))}
+          {SITE.contactEmail && (
+            <a href={`mailto:${SITE.contactEmail}`} className={l}>
+              Contact
+            </a>
+          )}
+          {SITE.instagram && (
+            <a href={SITE.instagram} className={l} rel="noopener noreferrer" target="_blank">
+              Instagram
+            </a>
+          )}
+          <Link href={EARLY_ACCESS} className={`${l} text-pinkdeep`}>
+            {CTA}
+          </Link>
         </nav>
-        <div className="flex flex-col items-start gap-2">
-          <p className="eyebrow mb-2 text-grey">More</p>
-          <Link href="/#faq" className="link-u text-[15px] font-bold">
-            FAQ
-          </Link>
-          <Link href="/#list" className="link-u text-[15px] font-bold">
-            Launch list
-          </Link>
-        </div>
       </div>
-      <Logo decorative className="mt-14 h-auto w-full select-none" />
-      <div className="mt-8 flex flex-col gap-2 text-xs text-grey md:flex-row md:justify-between">
+      <div className="mt-10 flex flex-col gap-2 border-t border-ink/10 pt-5 text-xs text-grey md:flex-row md:justify-between">
         <p>
-          © {new Date().getFullYear()} Still ON. {SITE.city}.
+          © {new Date().getFullYear()} Still ON. · Contains caffeine: 50 mg per strip. Read the label before use.
         </p>
-        <p>Contains caffeine: 50 mg per strip. Read the label before use.</p>
+        <p className="flex gap-5">
+          <Link href="/privacy" className="link-u">
+            Privacy Policy
+          </Link>
+          <Link href="/terms" className="link-u">
+            Terms
+          </Link>
+        </p>
       </div>
     </footer>
   );

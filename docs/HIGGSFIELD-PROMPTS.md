@@ -1,39 +1,79 @@
-# Higgsfield prompts for the missing shots
+# Higgsfield prompts
 
-Image generation was not available to the build session, so nothing here has been generated. These follow REF-09: direct on-camera flash, warm ivory background, real skin, clothed, one pink element per frame, no golden hour, no gym clichés. None shows the printed pack, so there is no packaging to get wrong; where the pack must appear, composite the real artwork afterwards.
+Higgsfield image generation was not available to the build session, so none of these has been generated there. Attach the approved packaging references to every prompt that shows the pack. Where pack text would be legible, composite the real artwork afterwards rather than trusting generated type.
 
-Shared ending for every prompt:
+## Shared blocks
+
+Campaign look, append to prompts 1, 6–8 and 10:
 
 ```text
-Shot on a 35 mm compact camera with direct on-camera flash, hard shadow thrown onto a seamless warm ivory (#F7F3EE) studio wall. Real skin texture: pores, freckles, sweat, slight shine. Natural colour, neutral white balance, fine film grain. High-fashion sports editorial, not an advertisement. Exactly one hot pink (#FF006E) element in the frame and nothing else pink. No text, no logos, no brand marks on clothing or equipment, no watermark, no golden-hour light, no gym background, no nudity, no extra fingers, no plastic skin.
+High-contrast black-and-white photograph, direct on-camera flash or one hard cinematic source, hard shadow on a plain pale studio wall. Heavy but fine analog film grain, deep blacks, open highlights. Real skin: pores, freckles, sweat. Fashion-editorial sports campaign, natural anatomy, strong expression, eyes to camera. The only colour in the frame is one hot pink (#FF006E) element. No text, no logos, no brand marks on clothing or equipment, no watermark, no golden hour, no gym clichés, no nudity, no plastic skin, no extra fingers.
 ```
 
-1. Hero, 16:9, subject in the right half, left half empty ivory for the headline
+Product fidelity, append to prompts 2–5 and 9:
 
 ```text
-Tight portrait of an athlete in their late twenties, slicked-back wet hair, looking straight into the lens with total calm. Tongue slightly out with one small plain white rectangular film strip resting on it, about 22 × 32 mm, matte, slightly translucent at the edges, nothing printed on it. One hand at the chin with a single hot pink fingernail. Plain black ribbed tank top. Framed from collarbone to hairline, face in the right half of the frame, the left half empty ivory wall.
+Reproduce the attached Still ON. references exactly: matte warm ivory (#F7F3EE) packaging, black type, one hot pink (#FF006E) swipe, the exact logo. Box 80 × 35 × 110 mm. Sachet 5 × 7 cm portrait, crimped seal on four sides, pink dashed tear line near the top. Strip: small plain white matte film, nothing printed on it, sized per the manufacturer file. Do not redesign, restyle, add or remove anything. True scale against hands. Soft studio light, clean white seamless, natural contact shadow, photographic not rendered. No extra props, no invented text.
 ```
 
-2. Boxer, 4:5
+## Prompts
+
+1. Homepage hero, 16:9 desktop and 4:5 mobile, subject right, left half clean for the headline
 
 ```text
-A boxer between rounds, seated, leaning toward camera, forearms on knees, hands in worn white cotton hand wraps, no gloves. Breathing hard, eyes locked on the lens. Plain white tank top soaked through. A small plain white film strip held between wrapped thumb and forefinger at chest height, about 22 × 32 mm. The only pink is the hot pink trim tape on one wrist wrap. Framed from knees to top of head.
+Tight portrait of an athlete in their late twenties, wet slicked-back hair, calm and direct. A small plain white film strip rests on the tongue. One hand at the chin with a single hot pink fingernail. Plain black ribbed tank top. Framed collarbone to hairline, face in the right half, left half empty pale wall.
 ```
 
-3. Runner, 4:5
+2. Product box hero, 4:5
 
 ```text
-A sprinter caught mid-stride running directly at the camera, both feet off the ground, arms pumping, hair flying, expression flat and focused. Plain black crop top and shorts. The only pink is a hot pink race bib pinned to the top, blank, with no numbers or text. Flash-frozen motion with slight ghosting behind the limbs. Full body, ivory studio floor and wall.
+The Still ON. box standing upright, three-quarter view from slightly above eye level, front and right side visible, two sachets leaning against it at true scale.
 ```
 
-4. Tennis, 4:5
+3. Sachet close-up, 4:5
 
 ```text
-A tennis player seen from slightly below, mid-serve, arm fully extended, racket strings sharp, face tilted up, mouth set. Plain white pleated skirt and top, white cap. The only pink is the hot pink overgrip on the racket handle. Sweat on the arms and neck. Three-quarter length.
+One Still ON. sachet floating at a slight angle, front face to camera, raking light showing the crimped seal texture and the matte surface.
 ```
 
-5. Product in hand, 4:5, for compositing
+4. Individual strip macro, 1:1
 
 ```text
-Close crop of a hand sliding a small flat matte ivory sachet, 5 × 7 cm, smaller than a credit card, into the waistband of plain black running shorts. The sachet face is blank ivory with a crimped seal on all four edges, left blank so the real artwork can be composited on. Bare midriff above the waistband only, skin with sweat. The only pink is one hot pink fingernail.
+Macro of one plain white dissolvable film strip lying on a clean white surface, raking side light revealing its thinness, matte surface and slightly translucent edges. Nothing printed on it.
+```
+
+5. How it works, three frames, 4:5 each, same hand and light
+
+```text
+Frame A: two hands tearing the sachet open along the pink dashed line. Frame B: fingers lifting the white strip out of the opened sachet. Frame C: the strip being placed on a tongue, cropped from nose to chin.
+```
+
+6. Cyclist, 4:5
+
+```text
+A road cyclist head-on to camera, silver helmet, dark wraparound glasses, plain white jersey soaked through, leaning into the lens. The one pink element: the edge of a sachet tucked into the jersey collar.
+```
+
+7. Boxer, 4:5
+
+```text
+A boxer between rounds, seated, leaning forward, forearms on knees, hands in worn white wraps, plain white tank top. A small white strip held between wrapped thumb and forefinger. The one pink element: a band of pink tape on one wrist wrap.
+```
+
+8. Runner, 4:5
+
+```text
+A sprinter mid-stride running straight at camera, both feet off the ground, hair flying, plain black kit. Flash-frozen with slight motion ghosting. The one pink element: a blank pink race bib.
+```
+
+9. Product conversion photograph, 4:5
+
+```text
+The Still ON. box with three sachets fanned beside it and one sachet torn open with the white strip half out, arranged on a clean warm ivory surface, shot from a low three-quarter angle with generous empty space above.
+```
+
+10. Closing campaign, 16:9, subject right third
+
+```text
+An athlete after effort, wet hair, plain white tank top, staring straight into the lens, chin slightly down. Framed tight from chest to hairline in the right third; the rest is empty pale wall for oversized type. The one pink element: a sachet held at the collarbone.
 ```

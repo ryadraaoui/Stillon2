@@ -6,40 +6,38 @@ import { FORMULA, PRODUCT, SITE } from "@/lib/site";
 import { PdpGallery } from "@/components/PdpGallery";
 import { Purchase } from "@/components/Purchase";
 import { Reveal, Line } from "@/components/Reveal";
-import { Censor } from "@/components/Brand";
-import { Strip } from "@/components/Sachet";
 import { ScaleCompare, Closing } from "@/components/Sections";
 import { Faq } from "@/components/Faq";
-import tongue from "@/assets/campaign-tongue-poster.webp";
+import inHand from "@/assets/bw-strip-hand.webp";
 
 export const revalidate = 300;
 export const metadata: Metadata = {
   title: "Bandelettes énergisantes N°01 — Energy strips, mint, box of 30",
-  description: "Still ON. N°01: caffeine + L-theanine energy strips. 50 mg caffeine, 30 mg L-theanine, B6 and B12 per strip. Mint. 30 individually sealed 5 × 7 cm sachets per box.",
+  description: "Still ON. N°01: energy strips with caffeine + L-theanine. 50 mg caffeine, 30 mg L-theanine, B6 and B12 per strip. Mint. 30 individually sealed 5 × 7 cm sachets per box.",
   alternates: { canonical: "/products/energy-strips" },
 };
 
 export default async function ProductPage({ searchParams }: PageProps<"/products/energy-strips">) {
   const [commerce, sp] = await Promise.all([getCommerce(), searchParams]);
+  const live = commerce.mode === "live";
   const ld = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: `Still ON. ${PRODUCT.nameFr} ${PRODUCT.number} — ${PRODUCT.nameEn}`,
-    description: "Caffeine + L-theanine energy strips. Mint. 30 individually sealed sachets per box.",
+    description: "Energy strips with caffeine + L-theanine. Mint. 30 individually sealed sachets per box.",
     brand: { "@type": "Brand", name: SITE.name },
     url: `${SITE.url}/products/energy-strips`,
-    ...(commerce.mode === "live"
-      ? { offers: { "@type": "Offer", price: (commerce.price.amount / 100).toFixed(2), priceCurrency: commerce.price.currency.toUpperCase(), availability: "https://schema.org/InStock", url: `${SITE.url}/products/energy-strips` } }
-      : {}),
+    ...(live ? { offers: { "@type": "Offer", price: (commerce.price.amount / 100).toFixed(2), priceCurrency: commerce.price.currency.toUpperCase(), availability: "https://schema.org/InStock", url: `${SITE.url}/products/energy-strips` } } : {}),
   };
   const specs: [string, string][] = [
     ["Format", "Dissolvable strip, one per sachet"],
     ["Flavour", `${PRODUCT.flavourFr} · ${PRODUCT.flavourEn}`],
     ["In the box", `${PRODUCT.count} sachets · ${PRODUCT.count} strips`],
-    ["Strip", `~${PRODUCT.strip.w} × ${PRODUCT.strip.h} mm, white, nothing printed on it`],
-    ["Sachet", "5 × 7 cm, matte ivory, sealed on four sides, ~2 mm thick"],
+    ["Strip", "White, matte, nothing printed on it"],
+    ["Sachet", "5 × 7 cm, matte ivory, sealed on four sides"],
     ["Box", `${PRODUCT.box.w} × ${PRODUCT.box.d} × ${PRODUCT.box.h} mm`],
   ];
+  const h2 = "eyebrow mt-12 mb-3 text-grey";
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
@@ -56,24 +54,22 @@ export default async function ProductPage({ searchParams }: PageProps<"/products
           <div className="min-w-0 md:sticky md:top-20 md:self-start">
             <PdpGallery />
           </div>
-          <div className="min-w-0 md:py-6">
-            <p className="eyebrow mb-4 flex items-center gap-3">
-              <span className="inline-block h-2 w-2 rounded-full bg-pink" /> {PRODUCT.number} · {PRODUCT.flavourFr} · {PRODUCT.flavourEn}
+          <div className="min-w-0 md:py-4">
+            <p className="eyebrow mb-4 text-grey">
+              {PRODUCT.number} · {PRODUCT.flavourFr} · {PRODUCT.flavourEn} · Box of {PRODUCT.count}
             </p>
-            <h1 className="display text-[13vw] md:text-[5.4vw]">
+            <h1 className="display text-[13vw] md:text-[5.2vw]">
               Bandelettes
               <br />
               énergisantes<span className="text-pink">.</span>
             </h1>
-            <p className="mt-3 text-lg font-bold text-grey">Energy strips · Caffeine + L-theanine · Box of {PRODUCT.count}</p>
-            <p className="mt-6 max-w-[44ch] text-[17px]">
-              One small white strip in its own sachet. Tear it open, put it on your tongue, let it dissolve. No can to carry, no cup to find, no water to chase it with. <Censor className="font-black" /> <strong>l’ordinaire.</strong>
-            </p>
-            <div className="mt-8 rounded-2xl bg-bone p-6 md:p-7">
+            <p className="mt-3 text-lg font-bold text-grey">Energy strips with caffeine + L-theanine</p>
+            <div id="early-access" className="mt-7 scroll-mt-24 rounded-2xl bg-bone p-6 md:p-7">
               <Purchase source="pdp" />
             </div>
+            <p className="mt-7 max-w-[46ch] text-[17px]">One small white strip in its own sachet. Open it, place it on your tongue, let it dissolve.</p>
 
-            <h2 className="eyebrow mt-12 mb-3 text-grey">Per strip · Par bandelette</h2>
+            <h2 className={h2}>Per strip · Par bandelette</h2>
             <table className="w-full border-t-2 border-ink text-left">
               <caption className="sr-only">Amounts per strip</caption>
               <tbody>
@@ -83,14 +79,24 @@ export default async function ProductPage({ searchParams }: PageProps<"/products
                       {f.en} <span className="font-normal text-grey">/ {f.fr}</span>
                     </th>
                     <td className="py-3.5 text-right text-[15px] font-black tabular-nums">
-                      {f.amount.replace(",", ".")} {f.unit}
+                      {f.amount} {f.unit}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
 
-            <h2 className="eyebrow mt-10 mb-3 text-grey">Details</h2>
+            <h2 className={h2}>How to use · Mode d’emploi</h2>
+            <ol className="grid grid-cols-3 gap-2">
+              {["Open it.", "Place it on your tongue.", "Let it dissolve."].map((t, i) => (
+                <li key={t} className="rounded-xl bg-bone p-4">
+                  <span className="text-3xl font-black text-pinktext">{i + 1}</span>
+                  <p className="mt-2 text-sm leading-tight font-black uppercase">{t}</p>
+                </li>
+              ))}
+            </ol>
+
+            <h2 className={h2}>Details</h2>
             <dl className="border-t-2 border-ink">
               {specs.map(([k, v]) => (
                 <div key={k} className="grid grid-cols-[110px_1fr] gap-4 border-b border-ink/15 py-3.5 text-[15px]">
@@ -100,69 +106,37 @@ export default async function ProductPage({ searchParams }: PageProps<"/products
               ))}
             </dl>
 
-            <h2 className="eyebrow mt-10 mb-3 text-grey">How to · Mode d’emploi</h2>
-            <ol className="grid grid-cols-3 gap-2">
-              {[["1", "Ouvre.", "open."], ["2", "Sur la langue.", "on the tongue."], ["3", "On.", "that's it."]].map(([n, fr, en]) => (
-                <li key={n} className="rounded-xl bg-bone p-4">
-                  <span className="text-3xl font-black text-pinktext">{n}</span>
-                  <p className="mt-2 text-sm leading-tight font-black uppercase">{fr}</p>
-                  <p className="text-xs text-grey">{en}</p>
-                </li>
-              ))}
-            </ol>
-            <p className="mt-6 text-xs text-grey">Contains caffeine (50 mg per strip). Read the full label on pack before use.</p>
+            <h2 className={h2}>Safety</h2>
+            <div className="rounded-xl border border-ink/15 p-5 text-[15px] text-grey">
+              <p>
+                <strong className="text-ink">Contains caffeine: 50 mg per strip.</strong> Count it against the rest of your day. Always read and follow the label on the pack.
+              </p>
+              <p className="mt-2">If you are sensitive to caffeine or unsure whether this product is right for you, ask a health professional first.</p>
+            </div>
+
+            <h2 className={h2}>Shipping</h2>
+            <p className="text-[15px] text-grey">
+              Not shipping yet. Details will be on the <Link href="/shipping" className="underline underline-offset-2">shipping page</Link> before launch.
+            </p>
           </div>
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-ink py-24 text-ivory md:py-36">
-        <div className="wrap grid items-center gap-14 md:grid-cols-2">
-          <div className="relative mx-auto grid aspect-square w-full max-w-[460px] place-items-center rounded-full ring-1 ring-ivory/15">
-            <div className="absolute inset-[12%] rounded-full ring-1 ring-ivory/10" />
-            <Strip className="float w-[30%]" style={{ "--r": "-7deg" } as React.CSSProperties} />
-          </div>
-          <div>
-            <p className="eyebrow mb-5 text-ivory/60">Anatomy of a strip</p>
-            <Reveal as="h2" variant="lines" className="display text-[14vw] md:text-[6.4vw]">
-              <Line>White.</Line>
-              <Line delay={90}>Blank.</Line>
-              <Line delay={180}>
-                <span className="display-italic text-pink">Busy.</span>
-              </Line>
-            </Reveal>
-            <ul className="mt-9 grid gap-x-8 gap-y-6 sm:grid-cols-2">
-              {[["~22 × 32 mm", "About the size of a postage stamp."], ["Nothing printed on it", "Plain white film. The sachet does the talking."], ["50 mg + 30 mg", "Caffeine + L-theanine, plus B6 and B12."], ["Menthe · Mint", "On the tongue. Let it dissolve."]].map(([k, v]) => (
-                <li key={k} className="border-t border-ivory/20 pt-4">
-                  <p className="text-xl font-black">{k}</p>
-                  <p className="mt-1 text-sm text-ivory/65">{v}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
+      <section className="grid bg-white md:grid-cols-2">
+        <div className="relative min-h-[70vw] md:min-h-[86svh]">
+          <Image src={inHand} alt="Black-and-white, direct flash: a hand with one hot pink nail holds the small white strip up beside an athlete's chin." fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
         </div>
-      </section>
-
-      <section className="wrap grid items-center gap-12 bg-ivory py-24 md:grid-cols-2 md:py-36">
-        <div>
-          <p className="eyebrow mb-5 text-grey">Size</p>
-          <Reveal as="h2" variant="lines" className="display text-[14vw] md:text-[6.4vw]">
-            <Line>Pocket.</Line>
-            <Line delay={90}>Waistband.</Line>
-            <Line delay={180}>
-              Wallet<span className="text-pink">.</span>
+        <div className="wrap flex flex-col justify-center gap-8 py-20 md:px-16">
+          <Reveal as="h2" variant="lines" className="display text-[13vw] md:text-[5.6vw]">
+            <Line>Small strip.</Line>
+            <Line delay={90}>
+              <span className="display-italic">Big attitude</span>
+              <span className="text-pink">.</span>
             </Line>
           </Reveal>
-          <p className="mt-6 max-w-[40ch] text-[17px] text-grey">The sachet is 5 × 7 cm and about 2 mm thick. It goes where a can won&apos;t: a jersey pocket, a clutch, the coin pocket of your jeans.</p>
-        </div>
-        <Reveal>
+          <p className="max-w-[38ch] text-[17px] text-grey">The sachet is 5 × 7 cm. It goes where a can won&apos;t: a jersey pocket, a waistband, a wallet.</p>
           <ScaleCompare />
-        </Reveal>
-      </section>
-
-      <section className="wrap bg-ivory pb-24 md:pb-36">
-        <Reveal variant="rv-img" className="relative mx-auto aspect-[3/4] w-full max-w-[720px] overflow-hidden rounded-2xl">
-          <Image src={tongue} alt="Campaign poster: “The day isn't done.” A woman looks into the camera with a white strip on her tongue. Still ON. logo." fill sizes="(max-width: 768px) 100vw, 720px" className="object-cover" />
-        </Reveal>
+        </div>
       </section>
 
       <Faq />

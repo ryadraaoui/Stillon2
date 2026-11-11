@@ -7,13 +7,13 @@ const page = async (vp, rm = false) => { const c = await b.newContext({ viewport
 const D = { width: 1440, height: 900 }, M = { width: 390, height: 844 };
 
 // --- overflow + broken images + links on every page, both viewports
-for (const [vn, vp] of [["desktop", D], ["mobile", M]]) for (const path of ["/", "/products/energy-strips", "/story", "/nope"]) {
+for (const [vn, vp] of [["small-mobile", { width: 320, height: 640 }], ["mobile", M], ["large-mobile", { width: 430, height: 932 }], ["tablet", { width: 820, height: 1180 }], ["desktop", D], ["wide", { width: 1920, height: 1080 }]]) for (const path of ["/", "/products/energy-strips", "/story", "/faq", "/privacy", "/terms", "/shipping", "/nope"]) {
   const p = await page(vp); const r = await p.goto(base + path, { waitUntil: "networkidle" });
   ok(`${vn} ${path} status`, path === "/nope" ? r.status() === 404 : r.status() === 200, String(r.status()));
   const H = await p.evaluate(() => document.documentElement.scrollHeight);
   for (let y = 0; y < H; y += 700) { await p.evaluate(y => window.scrollTo(0, y), y); await p.waitForTimeout(120); }
   await p.waitForTimeout(800);
-  const o = await p.evaluate(() => { const w = window.innerWidth; const bad = [...document.querySelectorAll("main *, footer *, header *")].filter(e => { if (e.closest(".hscroll, .marquee-track, [data-pin], #campaign, .box3d, .sachet")) return false; const r = e.getBoundingClientRect(); return r.width > 0 && (r.right > w + 2 || r.left < -2); }).slice(0, 4).map(e => e.tagName + "." + String(e.className).slice(0, 50)); return bad; });
+  const o = await p.evaluate(() => { const w = window.innerWidth; const bad = [...document.querySelectorAll("main *, footer *, header *")].filter(e => { if (e.closest(".hscroll, [data-pin], .box3d, .sachet")) return false; const r = e.getBoundingClientRect(); return r.width > 0 && (r.right > w + 2 || r.left < -2); }).slice(0, 4).map(e => e.tagName + "." + String(e.className).slice(0, 50)); return bad; });
   ok(`${vn} ${path} no horizontal overflow`, o.length === 0, o.join(" | "));
   const imgs = await p.evaluate(async () => { const u = [...new Set([...document.images].map(i => i.currentSrc || i.src).filter(Boolean))]; const bad = []; for (const x of u) { const r = await fetch(x); if (!r.ok) bad.push(x + " " + r.status); } return bad; });
   ok(`${vn} ${path} images loaded`, imgs.length === 0, imgs.join(","));
@@ -30,21 +30,25 @@ for (const [vn, vp] of [["desktop", D], ["mobile", M]]) for (const path of ["/",
 // --- desktop nav + anchor
 { const p = await page(D); await p.goto(base + "/", { waitUntil: "networkidle" });
   await p.click('nav[aria-label="Primary"] a:has-text("Our story")'); await p.waitForURL("**/story"); ok("nav → story", true);
-  await p.click('nav[aria-label="Primary"] a:has-text("Formula")'); await p.waitForURL("**/#formula"); await p.waitForTimeout(2500);
-  const top = await p.evaluate(() => document.getElementById("formula").getBoundingClientRect().top); ok("anchor nav scrolls to #formula", Math.abs(top) < 200, String(Math.round(top)));
-  // FAQ
-  await p.goto(base + "/#faq", { waitUntil: "networkidle" }); const b2 = p.locator("#faq-b-2"); await b2.scrollIntoViewIfNeeded(); await b2.click(); ok("FAQ opens", await b2.getAttribute("aria-expanded") === "true"); ok("FAQ single-open", await p.locator("#faq-b-0").getAttribute("aria-expanded") === "false");
+  if (mode === "prelaunch") {
+  await p.click('header a:has-text("Get early access")'); await p.waitForURL("**/#early-access"); await p.waitForTimeout(2500);
+  const top = await p.evaluate(() => document.getElementById("early-access").getBoundingClientRect().top); ok("header CTA lands on the early-access form", Math.abs(top) < 200, String(Math.round(top)));
+  const forms = await p.evaluate(() => document.querySelectorAll("main form").length); ok("homepage has exactly one signup form", forms === 1, String(forms));
+  } else { await p.goto(base + "/", { waitUntil: "networkidle" }); }
+  const secs = await p.evaluate(() => document.querySelectorAll("main > section").length); ok("homepage has exactly six sections", secs === 6, String(secs));
+  const ctas = await p.evaluate(() => [...document.querySelectorAll("a.btn, button.btn")].map(e => e.textContent.trim().toLowerCase())); if (mode === "prelaunch") ok("primary CTA wording is consistent", ctas.filter(c => c === "get early access").length >= 2 && !ctas.some(c => /buy now|shop now|launch list|tell me/.test(c)), ctas.join(" | "));
+  await p.goto(base + "/faq", { waitUntil: "networkidle" }); const b2 = p.locator("#faq-b-2"); await b2.click(); ok("FAQ opens", await b2.getAttribute("aria-expanded") === "true"); ok("FAQ single-open", await p.locator("#faq-b-0").getAttribute("aria-expanded") === "false");
   // reveal pins and progresses
   await p.goto(base + "/", { waitUntil: "networkidle" }); await p.waitForTimeout(1500);
-  const y0 = await p.evaluate(() => document.getElementById("reveal").getBoundingClientRect().top + scrollY);
-  await p.evaluate(y => window.scrollTo(0, y + 900 * 2.4), y0); await p.waitForTimeout(1500);
-  const st = await p.evaluate(() => ({ pinTop: Math.round(document.querySelector("[data-pin]").getBoundingClientRect().top), rot: document.querySelector("[data-pin] [data-sachet-3d]").style.transform }));
-  ok("reveal is pinned mid-sequence", st.pinTop === 0, JSON.stringify(st)); ok("reveal sachet is rotating", /rotateY|matrix3d/.test(st.rot), st.rot.slice(0, 60));
+  await p.evaluate(() => window.scrollTo(0, 0)); await p.waitForTimeout(400); await p.evaluate(() => window.scrollTo(0, innerHeight + 500)); await p.waitForTimeout(1500);
+  const st = await p.evaluate(() => ({ pinTop: Math.round(document.querySelector("[data-pin]").getBoundingClientRect().top), tf: document.querySelector("[data-sachet-holder]").style.transform }));
+  ok("reveal is pinned mid-sequence", st.pinTop === 0, JSON.stringify(st)); ok("reveal animates with scroll", st.tf.length > 0 && !st.tf.includes("78%"), st.tf.slice(0, 60));
+  await p.evaluate(() => window.scrollTo(0, innerHeight * 3.4)); await p.waitForTimeout(1200); const rel = await p.evaluate(() => Math.round(document.querySelector("[data-pin]").getBoundingClientRect().top)); ok("reveal releases after about two screens", rel < 0, String(rel));
   await p.context().close(); }
 // --- reduced motion
 { const p = await page(D, true); await p.goto(base + "/", { waitUntil: "networkidle" }); await p.waitForTimeout(800);
-  const r = await p.evaluate(() => ({ pin: getComputedStyle(document.querySelector("[data-pin]")).display, lenis: document.documentElement.classList.contains("lenis"), h1: getComputedStyle(document.querySelector("h1 span span")).transform, mq: getComputedStyle(document.querySelector(".marquee-track")).animationName, track: getComputedStyle(document.querySelector("[data-track]")).overflowX }));
-  ok("reduced motion: pinned reveal replaced by stills", r.pin === "none", r.pin); ok("reduced motion: no smooth-scroll hijack", !r.lenis); ok("reduced motion: marquee stopped", r.mq === "none", r.mq); ok("reduced motion: gallery is native scroll", r.track === "auto", r.track);
+  const r = await p.evaluate(() => ({ pin: getComputedStyle(document.querySelector("[data-pin]")).display, lenis: document.documentElement.classList.contains("lenis"), h1: getComputedStyle(document.querySelector("h1 span span")).transform, curtain: getComputedStyle(document.querySelector("[data-h-curtain]")).display }));
+  ok("reduced motion: pinned reveal replaced by stills", r.pin === "none", r.pin); ok("reduced motion: no smooth-scroll hijack", !r.lenis); ok("reduced motion: hero shows immediately", r.curtain === "none", r.curtain);
   await p.context().close(); }
 // --- mobile menu
 { const p = await page(M); await p.goto(base + "/", { waitUntil: "networkidle" });
@@ -61,11 +65,16 @@ for (const [vn, vp] of [["desktop", D], ["mobile", M]]) for (const path of ["/",
 if (mode === "prelaunch") {
   const p = await page(D); await p.goto(base + "/products/energy-strips", { waitUntil: "networkidle" });
   ok("prelaunch: no price shown", await p.locator('[data-testid="price"]').count() === 0); ok("prelaunch: header shows Launch list, no cart", await p.locator('[data-testid="cart-count"]').count() === 0);
-  const f = p.locator("main form").first(); await f.locator('input[type=email]').fill("not-an-email"); await f.locator("button[type=submit]").click(); await p.waitForTimeout(400);
-  ok("notify: browser blocks invalid email", await p.locator('[role="status"]').count() === 0);
-  await f.locator('input[type=email]').fill("qa-test@example.com"); await f.locator("button[type=submit]").click(); await p.waitForSelector('main [role="status"]', { timeout: 8000 }).catch(() => {});
-  ok("notify: valid email accepted", await p.locator('main [role="status"]').count() === 1, await p.locator('main [role="status"], main [role="alert"]').first().innerText().catch(() => "none"));
-  const api = await p.request.post(base + "/api/notify", { data: { email: "bad" } }); ok("notify API rejects bad email (400)", api.status() === 400);
+  ok("prelaunch status is shown", (await p.locator('[data-testid="status"]').first().innerText()).toLowerCase().includes("prelaunch"));
+  const mail = `qa-${Date.now()}@example.com`; const f = p.locator("main form").first();
+  await f.locator('input[type=email]').fill("not-an-email"); await f.locator("button[type=submit]").click(); await p.waitForTimeout(300); ok("signup: invalid email blocked", await p.locator('main [role="status"]:not([data-x])').filter({ hasText: "ON." }).count() === 0);
+  await f.locator('input[type=email]').fill(mail); await f.locator("button[type=submit]").click(); await p.waitForTimeout(400); ok("signup: blocked without consent", await p.locator("main form").count() >= 1 && await f.isVisible());
+  await f.locator('input[type=checkbox]').check(); await p.route("**/api/notify", async r => { await new Promise(x => setTimeout(x, 600)); r.continue(); }); await f.locator("button[type=submit]").click(); await p.waitForTimeout(150); ok("signup: button disabled with loading text while submitting", await f.locator("button[type=submit]").isDisabled().catch(() => false) && /adding/i.test(await f.locator("button[type=submit]").innerText().catch(() => "")));
+  await p.waitForSelector('main p[role="status"]', { timeout: 8000 }).catch(() => {}); const m1 = await p.locator('main p[role="status"], main [role="alert"]').first().innerText().catch(() => "none"); ok("signup: success confirmation", /you're in/i.test(m1), m1);
+  await p.reload({ waitUntil: "networkidle" }); const f2 = p.locator("main form").first(); await f2.locator('input[type=email]').fill(mail); await f2.locator('input[type=checkbox]').check(); await f2.locator("button[type=submit]").click(); await p.waitForSelector('main p[role="status"]', { timeout: 8000 }).catch(() => {});
+  const m2 = await p.locator('main p[role="status"]').first().innerText().catch(() => "none"); ok("signup: duplicate handled", /already on the list/i.test(m2), m2);
+  const api = await p.request.post(base + "/api/notify", { data: { email: "bad", consent: true } }); ok("signup API rejects bad email (400)", api.status() === 400);
+  const api2 = await p.request.post(base + "/api/notify", { data: { email: "ok@example.com" } }); ok("signup API requires consent (400)", api2.status() === 400);
   const co = await p.request.post(base + "/api/checkout", { data: { quantity: 1 } }); ok("checkout API refuses without Stripe (503)", co.status() === 503);
   await p.goto(base + "/checkout/success?session_id=cs_test_fake"); ok("success page does not confirm unverified order", (await p.locator("h1").innerText()).toLowerCase().includes("can’t confirm"));
   await p.context().close();
