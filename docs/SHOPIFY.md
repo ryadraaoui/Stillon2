@@ -8,7 +8,7 @@ Built and tested against a **mock** Storefront API only. It has not been run aga
 
 ## What turns it on
 
-All of these must be set (see `.env.example`): `SHOPIFY_CHECKOUT_ENABLED=true`, `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_TOKEN`, the three `SHOPIFY_VARIANT_*` ids and, for ON Repeat., the three `SHOPIFY_SELLING_PLAN_*` ids. Set them in Vercel (Project → Settings → Environment Variables) and redeploy: pages are generated at build time and refresh every 5 minutes.
+All of these must be set (see `.env.example`): `SHOPIFY_CHECKOUT_ENABLED=true`, `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_PRIVATE_TOKEN` (or the public `SHOPIFY_STOREFRONT_TOKEN`), the three `SHOPIFY_PRODUCT_*` ids (or `SHOPIFY_VARIANT_*`) and, for ON Repeat., the three `SHOPIFY_SELLING_PLAN_*` ids. Set them in Vercel (Project → Settings → Environment Variables) and redeploy: pages are generated at build time and refresh every 5 minutes.
 
 If anything is missing, a variant is not found, a variant is not available for sale, or the bundles are priced in different currencies, the site **falls back to prelaunch** and logs why. A half-configured shop never shows wrong prices.
 
@@ -26,7 +26,8 @@ The bundle names, contents (boxes, strips, ON Tag), layout, selection behaviour 
 
 ## Setting up the store
 
-1. **Three products or one product with three variants**, one variant per bundle: The Intro (1 box, 30 strips), The Everyday (2 boxes, 60), The Stockup (3 boxes, 90). Copy each variant id into the `SHOPIFY_VARIANT_*` variables.
+0. **Stock and publishing.** Each product must be published to the Headless/storefront sales channel and be available to buy. A product with tracked inventory at 0 counts as unavailable and the site stays in prelaunch. Give it stock, or untick "Track quantity".
+1. **Three products or one product with three variants**, one variant per bundle: The Intro (1 box, 30 strips), The Everyday (2 boxes, 60), The Stockup (3 boxes, 90). Copy the number at the end of each product's admin URL into `SHOPIFY_PRODUCT_INTRO`, `_EVERYDAY`, `_STOCKUP` (the first variant is used). For a product with several variants, set `SHOPIFY_VARIANT_*` instead.
 2. **A Storefront API token.** Create a custom app (or use the Headless channel), enable Storefront API access, and grant at least: read product listings, read selling plans, write checkouts/carts. Confirm the exact scope names in your Shopify admin.
 3. **ON Repeat.** Use Shopify Subscriptions (or a subscription app) to create selling plans for 30, 60 and 90 days and attach them to the Everyday and Stockup variants only. Put their ids in `SHOPIFY_SELLING_PLAN_*`. The Intro must not have a plan.
 4. **Shipping, taxes, payments, checkout branding** are configured in Shopify.

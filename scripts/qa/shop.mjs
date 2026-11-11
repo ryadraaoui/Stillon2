@@ -22,15 +22,15 @@ for (const [tag, path] of [["home", "/"], ["pdp", "/products/energy-strips"]]) {
     ok("homepage has no early-access signup form", await p.locator("main form").count() === 0);
     // checkout one-time Everyday
     await o.locator('label[data-offer="everyday"]').click(); await o.locator('label:has-text("One-time")').click();
-    const [r1] = await Promise.all([p.waitForRequest(r => r.url().includes("/checkout-mock/")), o.locator('[data-testid="shop-checkout"]').click()]); const c1 = await last();
+    const [r1] = await Promise.all([p.waitForRequest(r => r.url().includes("/checkout-mock/")), o.locator('[data-testid="shop-checkout"]').click()]); const c1 = await last(); await p.waitForTimeout(900);
     ok("checkout: Everyday one-time creates a cart for variant 102 with no selling plan", r1.url().includes("/checkout-mock/cart1") && c1.lines?.[0].merchandiseId === "gid://shopify/ProductVariant/102" && c1.lines[0].quantity === 1 && !("sellingPlanId" in c1.lines[0]), JSON.stringify(c1));
     await p.goto(base + "/", { waitUntil: "load" }); await p.waitForTimeout(700); const o2 = p.locator('[data-testid="offers"]'); await o2.scrollIntoViewIfNeeded();
     await o2.locator('label:has-text("ON Repeat.")').click(); await o2.locator('label:has-text("Every 60 days")').click();
-    const [r2] = await Promise.all([p.waitForRequest(r => r.url().includes("/checkout-mock/")), o2.locator('[data-testid="shop-checkout"]').click()]); const c2 = await last();
+    const [r2] = await Promise.all([p.waitForRequest(r => r.url().includes("/checkout-mock/")), o2.locator('[data-testid="shop-checkout"]').click()]); const c2 = await last(); await p.waitForTimeout(900);
     ok("checkout: Everyday ON Repeat. every 60 days sends selling plan 302", c2.lines?.[0].merchandiseId === "gid://shopify/ProductVariant/102" && c2.lines[0].sellingPlanId === "gid://shopify/SellingPlan/302", JSON.stringify(c2));
     await p.goto(base + "/", { waitUntil: "load" }); await p.waitForTimeout(700); const o3 = p.locator('[data-testid="offers"]'); await o3.scrollIntoViewIfNeeded();
     await o3.locator('label[data-offer="stockup"]').click(); await o3.locator('label:has-text("ON Repeat.")').click(); await o3.locator('label:has-text("Every 90 days")').click();
-    await Promise.all([p.waitForRequest(r => r.url().includes("/checkout-mock/")), o3.locator('[data-testid="shop-checkout"]').click()]); const c3 = await last();
+    await Promise.all([p.waitForRequest(r => r.url().includes("/checkout-mock/")), o3.locator('[data-testid="shop-checkout"]').click()]); const c3 = await last(); await p.waitForTimeout(900);
     ok("checkout: Stockup ON Repeat. every 90 days sends variant 103 + plan 303", c3.lines?.[0].merchandiseId === "gid://shopify/ProductVariant/103" && c3.lines[0].sellingPlanId === "gid://shopify/SellingPlan/303", JSON.stringify(c3));
     const api = async (data) => (await p.request.post(base + "/api/shopify/checkout", { data })).status();
     ok("checkout API: unknown bundle → 400", await api({ offer: "mega" }) === 400); ok("checkout API: ON Repeat. on The Intro → 400", await api({ offer: "intro", purchaseType: "repeat", interval: 30 }) === 400); ok("checkout API: repeat without a valid interval → 400", await api({ offer: "everyday", purchaseType: "repeat", interval: 45 }) === 400);

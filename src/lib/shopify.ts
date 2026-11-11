@@ -14,26 +14,33 @@ import { offerConfig, type Interval, type Offer, type OfferId } from "@/config/o
  * Required environment (see docs/SHOPIFY.md):
  *   SHOPIFY_CHECKOUT_ENABLED=true     explicit go-live switch. Without it the site stays in prelaunch.
  *   SHOPIFY_STORE_DOMAIN              your-store.myshopify.com
- *   SHOPIFY_STOREFRONT_TOKEN          Storefront API public access token (a private-delivery token also works)
- *   SHOPIFY_VARIANT_INTRO|EVERYDAY|STOCKUP   variant id (numeric or gid://shopify/ProductVariant/…)
+ *   SHOPIFY_STOREFRONT_PRIVATE_TOKEN  Storefront API private access token (preferred for this server-side use)
+ *     or SHOPIFY_STOREFRONT_TOKEN     the public access token (works too)
+ *   SHOPIFY_PRODUCT_INTRO|EVERYDAY|STOCKUP   the number at the end of each product's admin URL. Its first variant is used.
+ *     or SHOPIFY_VARIANT_INTRO|EVERYDAY|STOCKUP   a specific variant id (numeric or gid://shopify/ProductVariant/…)
  *   SHOPIFY_SELLING_PLAN_30|60|90     selling-plan ids for ON Repeat. (numeric or gid://shopify/SellingPlan/…)
  * Optional: SHOPIFY_API_VERSION (default below). SHOPIFY_STOREFRONT_URL exists for automated tests only.
  */
 export const SHOPIFY_API_VERSION = process.env.SHOPIFY_API_VERSION ?? "2026-07";
 
-const gid = (kind: "ProductVariant" | "SellingPlan", v: string | undefined) => (!v ? null : v.startsWith("gid://") ? v : /^\d+$/.test(v) ? `gid://shopify/${kind}/${v}` : null);
+const gid = (kind: "ProductVariant" | "SellingPlan" | "Product", v: string | undefined) => (!v ? null : v.startsWith("gid://") ? v : /^\d+$/.test(v) ? `gid://shopify/${kind}/${v}` : null);
 
 export function shopifyEnabled() {
-  return process.env.SHOPIFY_CHECKOUT_ENABLED === "true" && Boolean(process.env.SHOPIFY_STORE_DOMAIN && process.env.SHOPIFY_STOREFRONT_TOKEN);
+  return process.env.SHOPIFY_CHECKOUT_ENABLED === "true" && Boolean(process.env.SHOPIFY_STORE_DOMAIN && (process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN || process.env.SHOPIFY_STOREFRONT_TOKEN));
 }
-export const variantFor = (id: OfferId) => gid("ProductVariant", process.env[`SHOPIFY_VARIANT_${id.toUpperCase()}`]);
+/** The merchandise a bundle points at: an explicit variant if set, otherwise the product (its first variant is used). */
+export const merchandiseFor = (id: OfferId) => gid("ProductVariant", process.env[`SHOPIFY_VARIANT_${id.toUpperCase()}`]) ?? gid("Product", process.env[`SHOPIFY_PRODUCT_${id.toUpperCase()}`]);
 export const sellingPlanFor = (interval: Interval) => gid("SellingPlan", process.env[`SHOPIFY_SELLING_PLAN_${interval}`]);
 
 export async function storefront<T>(query: string, variables: Record<string, unknown>, revalidate?: number): Promise<T> {
   const url = process.env.SHOPIFY_STOREFRONT_URL ?? `https://${process.env.SHOPIFY_STORE_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json`;
   const res = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Shopify-Storefront-Access-Token": process.env.SHOPIFY_STOREFRONT_TOKEN ?? "" },
+    headers: {
+      "Content-Type": "application/json",
+      // a private token (server-side) is preferred when present; otherwise the public token
+      ...(process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN ? { "Shopify-Storefront-Private-Token": process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN } : { "X-Shopify-Storefront-Access-Token": process.env.SHOPIFY_STOREFRONT_TOKEN ?? "" }),
+    },
     body: JSON.stringify({ query, variables }),
     ...(revalidate !== undefined ? { next: { revalidate } } : { cache: "no-store" as const }),
   });
@@ -48,7 +55,8 @@ type VariantNode = {
   price: { amount: string; currencyCode: string };
   sellingPlanAllocations?: { nodes: { sellingPlan: { id: string }; priceAdjustments: { perDeliveryPrice?: { amount: string }; price?: { amount: string } }[] }[] };
 };
-const VARIANTS = `query Variants($ids: [ID!]!) { nodes(ids: $ids) { ... on ProductVariant { id availableForSale price { amount currencyCode } sellingPlanAllocations(first: 10) { nodes { sellingPlan { id } priceAdjustments { price { amount } perDeliveryPrice { amount } } } } } } }`;
+const FIELDS = `id availableForSale price { amount currencyCode } sellingPlanAllocations(first: 10) { nodes { sellingPlan { id } priceAdjustments { price { amount } perDeliveryPrice { amount } } } }`;
+const VARIANTS = `query Variants($ids: [ID!]!) { nodes(ids: $ids) { ... on ProductVariant { ${FIELDS} } ... on Product { variants(first: 1) { nodes { ${FIELDS} } } } } }`;
 
 export type ShopifyCommerce = { mode: "shopify"; currency: string; offers: Offer[] };
 
@@ -59,14 +67,15 @@ export type ShopifyCommerce = { mode: "shopify"; currency: string; offers: Offer
 export async function loadShopifyOffers(): Promise<ShopifyCommerce | null> {
   if (!shopifyEnabled()) return null;
   try {
-    const ids = offerConfig.offers.map((o) => variantFor(o.id));
-    if (ids.some((i) => !i)) throw new Error("a SHOPIFY_VARIANT_* id is missing or malformed");
-    const data = await storefront<{ nodes: (VariantNode | null)[] }>(VARIANTS, { ids }, 300);
+    const ids = offerConfig.offers.map((o) => merchandiseFor(o.id));
+    if (ids.some((i) => !i)) throw new Error("a SHOPIFY_PRODUCT_* or SHOPIFY_VARIANT_* id is missing or malformed");
+    const data = await storefront<{ nodes: ((VariantNode & { variants?: { nodes: VariantNode[] } }) | null)[] }>(VARIANTS, { ids }, 300);
     const planIds = offerConfig.intervals.map((d) => sellingPlanFor(d)).filter(Boolean);
     const currencies = new Set<string>();
     const offers = offerConfig.offers.map((base, i) => {
-      const v = data.nodes[i];
-      if (!v || v.id !== ids[i]) throw new Error(`variant for ${base.id} was not found`);
+      const node = data.nodes[i];
+      const v = node?.variants ? node.variants.nodes[0] : node;
+      if (!v || (!node?.variants && v.id !== ids[i])) throw new Error(`${base.id} was not found in Shopify (is it published to the storefront channel?)`);
       if (!v.availableForSale) throw new Error(`variant for ${base.id} is not available for sale`);
       currencies.add(v.price.currencyCode);
       let subscriptionPrice: number | null = null;
@@ -84,6 +93,14 @@ export async function loadShopifyOffers(): Promise<ShopifyCommerce | null> {
     console.error("[shopify] falling back to prelaunch:", e);
     return null;
   }
+}
+
+/** The variant to sell for a bundle: the configured variant, or the first variant of the configured product. */
+export async function resolveVariantId(id: OfferId): Promise<string | null> {
+  const m = merchandiseFor(id);
+  if (!m || m.includes("/ProductVariant/")) return m;
+  const data = await storefront<{ node: { variants: { nodes: { id: string }[] } } | null }>(`query ProductVariant($id: ID!) { node(id: $id) { ... on Product { variants(first: 1) { nodes { id } } } } }`, { id: m }, 300);
+  return data.node?.variants.nodes[0]?.id ?? null;
 }
 
 /** Creates a cart and returns Shopify's hosted checkout URL. */

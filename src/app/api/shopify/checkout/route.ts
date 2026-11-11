@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getOffer, offerConfig } from "@/config/offers";
-import { createCheckout, sellingPlanFor, shopifyEnabled, variantFor } from "@/lib/shopify";
+import { createCheckout, resolveVariantId, sellingPlanFor, shopifyEnabled } from "@/lib/shopify";
 
 /** Creates a Shopify cart for the chosen bundle and returns the hosted-checkout URL. No payment is handled here. */
 export async function POST(req: Request) {
@@ -17,7 +17,12 @@ export async function POST(req: Request) {
   if (repeat && !offer.subscriptionEligible) return NextResponse.json({ error: `${offer.name} is one-time only.` }, { status: 400 });
   const interval = Number(body.interval);
   if (repeat && !(offerConfig.intervals as readonly number[]).includes(interval)) return NextResponse.json({ error: "Pick a delivery interval." }, { status: 400 });
-  const variant = variantFor(offer.id);
+  let variant: string | null = null;
+  try {
+    variant = await resolveVariantId(offer.id);
+  } catch (e) {
+    console.error("[shopify/checkout] variant lookup", e);
+  }
   const plan = repeat ? sellingPlanFor(interval as 30 | 60 | 90) : null;
   if (!variant || (repeat && !plan)) return NextResponse.json({ error: "This bundle isn't set up in the shop yet." }, { status: 503 });
   try {

@@ -2,13 +2,17 @@
 import http from "node:http";
 const PRICES = { "gid://shopify/ProductVariant/101": 41, "gid://shopify/ProductVariant/102": 72, "gid://shopify/ProductVariant/103": 93 };
 const REPEAT = { "gid://shopify/ProductVariant/102": 65, "gid://shopify/ProductVariant/103": 83 };
+const P2V = { "gid://shopify/Product/201": "gid://shopify/ProductVariant/101", "gid://shopify/Product/202": "gid://shopify/ProductVariant/102", "gid://shopify/Product/203": "gid://shopify/ProductVariant/103" };
 globalThis.last = null;
 http.createServer((req, res) => {
   let body = ""; req.on("data", (c) => (body += c)); req.on("end", () => {
     const j = (o, c = 200) => { res.writeHead(c, { "Content-Type": "application/json" }); res.end(JSON.stringify(o)); };
     if (req.url === "/__last") return j(globalThis.last ?? {});
-    if (req.headers["x-shopify-storefront-access-token"] !== "test-token") return j({ errors: [{ message: "Invalid token" }] }, 401);
+    if (req.headers["x-shopify-storefront-access-token"] !== "test-token" && req.headers["shopify-storefront-private-token"] !== "test-private") return j({ errors: [{ message: "Invalid token" }] }, 401);
     const { query, variables } = JSON.parse(body || "{}");
+    const node = (id) => ({ id, availableForSale: process.env.MOCK_UNAVAILABLE !== id, price: { amount: PRICES[id].toFixed(2), currencyCode: "USD" }, sellingPlanAllocations: { nodes: REPEAT[id] ? [{ sellingPlan: { id: "gid://shopify/SellingPlan/301" }, priceAdjustments: [{ price: { amount: REPEAT[id].toFixed(2) }, perDeliveryPrice: { amount: REPEAT[id].toFixed(2) } }] }] : [] } });
+    if (query.includes("ProductVariant($id")) return j({ data: { node: P2V[variables.id] ? { variants: { nodes: [{ id: P2V[variables.id] }] } } : null } });
+    if (query.includes("nodes(ids") && String(variables.ids[0]).includes("/Product/")) return j({ data: { nodes: variables.ids.map((id) => P2V[id] ? { variants: { nodes: [node(P2V[id])] } } : null) } });
     if (query.includes("nodes(ids")) return j({ data: { nodes: variables.ids.map((id) => PRICES[id] ? ({ id, availableForSale: process.env.MOCK_UNAVAILABLE !== id, price: { amount: PRICES[id].toFixed(2), currencyCode: "USD" }, sellingPlanAllocations: { nodes: REPEAT[id] ? [{ sellingPlan: { id: "gid://shopify/SellingPlan/301" }, priceAdjustments: [{ price: { amount: REPEAT[id].toFixed(2) }, perDeliveryPrice: { amount: REPEAT[id].toFixed(2) } }] }] : [] } }) : null) } });
     if (query.includes("cartCreate")) { globalThis.last = variables.input; return j({ data: { cartCreate: { cart: { id: "gid://shopify/Cart/1", checkoutUrl: "http://localhost:3002/checkout-mock/cart1" }, userErrors: [] } } }); }
     j({ errors: [{ message: "unknown query" }] }, 400);
