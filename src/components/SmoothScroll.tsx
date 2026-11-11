@@ -14,7 +14,7 @@ export function SmoothScroll() {
   const pathname = usePathname();
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const l = new Lenis({ lerp: 0.11, anchors: { offset: -56 } });
+    const l = new Lenis({ lerp: 0.11, anchors: { offset: -100 } });
     lenis = l;
     l.on("scroll", ScrollTrigger.update);
     const tick = (t: number) => l.raf(t * 1000);
@@ -35,7 +35,7 @@ export function SmoothScroll() {
       if (!hash) return;
       const target = document.getElementById(decodeURIComponent(hash.slice(1)));
       if (!target) return;
-      if (lenis) lenis.scrollTo(target, { immediate: true, offset: -56, force: true });
+      if (lenis) lenis.scrollTo(target, { immediate: true, offset: -100, force: true });
       else target.scrollIntoView();
     }, 350);
     return () => clearTimeout(t);

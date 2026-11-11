@@ -32,7 +32,7 @@ for (const [vn, vp] of [["small-mobile", { width: 320, height: 640 }], ["mobile"
   await p.click('nav[aria-label="Primary"] a:has-text("Our story")'); await p.waitForURL("**/story"); ok("nav → story", true);
   if (mode === "prelaunch") {
   await p.click('header a:has-text("Get early access")'); await p.waitForURL("**/#early-access"); await p.waitForTimeout(2500);
-  const top = await p.evaluate(() => document.getElementById("early-access").getBoundingClientRect().top); ok("header CTA lands on the early-access form", Math.abs(top) < 200, String(Math.round(top)));
+  const top = await p.evaluate(() => document.getElementById("early-access").getBoundingClientRect().top); ok("header CTA lands on the early-access form", top >= 0 && top < 260, String(Math.round(top)));
   const forms = await p.evaluate(() => document.querySelectorAll("main form").length); ok("homepage has exactly one signup form", forms === 1, String(forms));
   } else { await p.goto(base + "/", { waitUntil: "networkidle" }); }
   const secs = await p.evaluate(() => document.querySelectorAll("main section").length); ok("homepage has exactly eight sections", secs === 8, String(secs));
@@ -57,6 +57,16 @@ for (const [vn, vp] of [["small-mobile", { width: 320, height: 640 }], ["mobile"
   const r = await p.evaluate(() => ({ pin: getComputedStyle(document.querySelector("[data-pin]")).display, lenis: document.documentElement.classList.contains("lenis"), h1: getComputedStyle(document.querySelector("h1 span span")).transform, curtain: getComputedStyle(document.querySelector("[data-h-curtain]")).display, track: getComputedStyle(document.querySelector("[data-track]")).overflowX, tick: document.querySelector("[data-row]").style.transform }));
   ok("reduced motion: pinned reveal replaced by stills", r.pin === "none", r.pin); ok("reduced motion: no smooth-scroll hijack", !r.lenis); ok("reduced motion: hero shows immediately", r.curtain === "none", r.curtain); ok("reduced motion: campaign is a native scroll row", r.track === "auto", r.track); ok("reduced motion: ticker is still", r.tick === "", r.tick);
   await p.context().close(); }
+// --- floating nav
+for (const [vn, vp] of [["desktop", D], ["tablet", { width: 820, height: 1180 }], ["mobile", M], ["small-mobile", { width: 320, height: 640 }]]) { const p = await page(vp); await p.goto(base + "/", { waitUntil: "networkidle" }); await p.waitForTimeout(700);
+  const m = () => p.evaluate(() => { const c = document.querySelector('[data-testid="nav-capsule"]').getBoundingClientRect(); const l = document.querySelector('header a[aria-label^="Still ON."] img').getBoundingClientRect(); const cs = getComputedStyle(document.querySelector('[data-testid="nav-capsule"]')); const kids = [...document.querySelectorAll('[data-testid="nav-capsule"] a, [data-testid="nav-capsule"] button')].filter(e => e.getBoundingClientRect().width > 0).map(e => e.getBoundingClientRect()); const overlap = kids.some((a, i) => kids.some((b, j) => i < j && a.left < b.right - 1 && b.left < a.right - 1)); const small = kids.filter(k => k.height < 40).length; return { top: Math.round(c.top), h: Math.round(c.height), off: Math.round(Math.abs((l.left + l.right) / 2 - innerWidth / 2)), blur: cs.backdropFilter || cs.webkitBackdropFilter, radius: cs.borderTopLeftRadius, a: cs.getPropertyValue("--nav-a").trim(), overlap, small, sy: Math.round(scrollY) }; });
+  const a = await m(); ok(`nav ${vn}: wordmark on the viewport centre line`, a.off <= 1, `${a.off}px`); ok(`nav ${vn}: frosted pill`, /blur\(24px\)/.test(a.blur) && parseFloat(a.radius) > 100, a.blur + " " + a.radius); ok(`nav ${vn}: items do not collide, targets ≥ 40px`, !a.overlap && a.small === 0, JSON.stringify(a));
+  await p.evaluate(() => window.scrollTo(0, 1400)); await p.waitForTimeout(900); const b2 = await m();
+  ok(`nav ${vn}: stays put on scroll with no size change`, b2.top === a.top && b2.h === a.h && b2.sy > 0, JSON.stringify([a.top, b2.top, a.h, b2.h])); ok(`nav ${vn}: opacity rises on scroll`, parseFloat(b2.a) > parseFloat(a.a), `${a.a} → ${b2.a}`);
+  if (vn === "desktop") { const order = await p.evaluate(() => [...document.querySelectorAll('[data-testid="nav-capsule"] a')].map(e => e.getAttribute("aria-label") || e.textContent.trim())); ok("nav desktop: Shop, Our story | logo | FAQ, Get early access", order.join("|").startsWith("Shop|Our story|Still ON. — home|FAQ|Get early access"), order.join("|"));
+    await p.keyboard.press("Tab"); await p.keyboard.press("Tab"); const f = await p.evaluate(() => document.activeElement.textContent.trim()); ok("nav desktop: keyboard reaches links in order", f === "Shop", f); }
+  if (vp.width < 1024) { const t = p.locator('button[aria-controls="mobile-menu"]'); await t.click(); await p.waitForTimeout(500); const lock = await p.evaluate(() => ({ o: document.documentElement.style.overflow, f: document.activeElement.textContent.trim(), n: document.querySelectorAll("#mobile-menu a").length })); ok(`nav ${vn}: menu locks scroll, moves focus, has 4 links`, lock.o === "hidden" && lock.f.startsWith("Shop") && lock.n === 4, JSON.stringify(lock)); await p.keyboard.press("Escape"); await p.waitForTimeout(300); const back = await p.evaluate(() => ({ o: document.documentElement.style.overflow, f: document.activeElement.getAttribute("aria-controls") })); ok(`nav ${vn}: Escape closes, unlocks, returns focus`, back.o === "" && back.f === "mobile-menu", JSON.stringify(back)); }
+  await p.context().close(); }
 // --- touch: campaign is a native swipe row, not pinned
 { const p = await page(M); await p.goto(base + "/", { waitUntil: "networkidle" }); await p.waitForTimeout(800);
   const r = await p.evaluate(async () => { const t = document.querySelector("[data-track]"); t.scrollIntoView(); t.scrollLeft = 600; await new Promise(x => setTimeout(x, 400)); return { ox: getComputedStyle(t).overflowX, snap: getComputedStyle(t).scrollSnapType, left: t.scrollLeft, pinned: !!t.closest(".pin-spacer") }; });
@@ -66,7 +76,7 @@ for (const [vn, vp] of [["small-mobile", { width: 320, height: 640 }], ["mobile"
 { const p = await page(M); await p.goto(base + "/", { waitUntil: "networkidle" });
   const t = p.locator('button[aria-controls="mobile-menu"]'); await t.click(); await p.waitForTimeout(900);
   ok("mobile menu opens", await t.getAttribute("aria-expanded") === "true"); await p.keyboard.press("Escape"); await p.waitForTimeout(300); ok("mobile menu closes on ESC", await t.getAttribute("aria-expanded") === "false");
-  await t.click(); await p.waitForTimeout(900); await p.click('#mobile-menu a:has-text("The strips")'); await p.waitForURL("**/products/energy-strips"); await p.waitForTimeout(600);
+  await t.click(); await p.waitForTimeout(900); await p.click('#mobile-menu a:has-text("Shop")'); await p.waitForURL("**/products/energy-strips"); await p.waitForTimeout(600);
   ok("mobile menu navigates + closes", await t.getAttribute("aria-expanded") === "false");
   await p.context().close(); }
 // --- PDP gallery

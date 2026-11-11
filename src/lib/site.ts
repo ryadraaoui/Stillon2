@@ -35,7 +35,7 @@ export const FORMULA = [
 ] as const;
 
 export const NAV = [
-  { href: "/products/energy-strips", label: "The strips" },
+  { href: "/products/energy-strips", label: "Shop" },
   { href: "/story", label: "Our story" },
   { href: "/faq", label: "FAQ" },
 ] as const;

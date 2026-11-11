@@ -20,3 +20,5 @@ Nothing below is an approved final asset until the founder signs it off.
 The black-and-white grade is produced by `scripts/bw-treatment.py` from the colour originals kept in `src/assets` (`campaign-*`, `gen-*`), so a replacement photo can be re-graded identically.
 
 Kept off the homepage for later use: tennis image (`gen-tennis.webp`), shades portrait and posters (`campaign-shades*`, `campaign-tongue-poster`). The eight-frame film storyboard was removed from the site; the frames are in the reference pack.
+
+`src/assets/logo-light.png` is the same wordmark with "Still" recoloured to warm ivory, made for the dark navigation capsule. It is not an approved logo variant yet: replace it with an official light version, or approve it.

@@ -94,7 +94,7 @@ export function Formula() {
 /** Experience 07. The one signup on the page. Hero, header, closing and footer CTAs all land here. */
 export function Conversion() {
   return (
-    <section id="early-access" className="wrap scroll-mt-[var(--header-h)] bg-bone py-24 md:py-36">
+    <section id="early-access" className="wrap bg-bone py-24 md:py-36">
       <div className="grid items-center gap-14 md:grid-cols-2 md:gap-10">
         <Reveal className="relative mx-auto flex w-full max-w-[540px] items-end justify-center gap-[4%] py-6">
           <Box3D className="w-[46%]" />

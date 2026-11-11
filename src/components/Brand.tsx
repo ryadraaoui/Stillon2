@@ -1,9 +1,11 @@
 import Image from "next/image";
 import logo from "@/assets/logo.png";
+import logoLight from "@/assets/logo-light.png";
 
 /** The one real logo (REF-01), colour-keyed from the supplied raster. Use on ivory or light surfaces only. */
-export function Logo({ className = "", priority = false, decorative = false }: { className?: string; priority?: boolean; decorative?: boolean }) {
-  return <Image src={logo} alt={decorative ? "" : "Still ON."} aria-hidden={decorative || undefined} className={className} priority={priority} sizes="(max-width: 768px) 60vw, 40vw" />;
+export function Logo({ className = "", priority = false, decorative = false, light = false }: { className?: string; priority?: boolean; decorative?: boolean; light?: boolean }) {
+  // light: "Still" in warm ivory for dark surfaces (the nav capsule). Same shapes, same pink "ON."
+  return <Image src={light ? logoLight : logo} alt={decorative ? "" : "Still ON."} aria-hidden={decorative || undefined} className={className} priority={priority} sizes="(max-width: 768px) 60vw, 40vw" />;
 }
 
 /** The dry-brush censor swipe from the pack ("F▮ L'ORDINAIRE."). */

@@ -40,7 +40,7 @@ export function Hero() {
 
   return (
     <section ref={root} className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden bg-[#fcfcfc] pt-[var(--header-h)]">
-      <div className="absolute inset-x-0 top-[var(--header-h)] h-[58svh] overflow-hidden md:inset-y-0 md:top-0 md:right-0 md:left-auto md:h-full md:w-[58%]">
+      <div className="absolute inset-x-0 top-0 h-[66svh] overflow-hidden md:inset-y-0 md:top-0 md:right-0 md:left-auto md:h-full md:w-[58%]">
         <Image
           data-h-img
           src={hero}
@@ -49,7 +49,7 @@ export function Hero() {
           fetchPriority="high"
           fill
           sizes="(max-width: 768px) 100vw, 58vw"
-          className="object-cover object-[50%_16%] md:object-[42%_30%]"
+          className="object-cover object-[50%_12%] md:object-[42%_30%]"
         />
         <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#fcfcfc] to-transparent md:inset-y-0 md:right-auto md:left-0 md:h-full md:w-1/4 md:bg-gradient-to-r" />
         <div data-h-curtain aria-hidden="true" className="absolute inset-0 bg-[#fcfcfc] motion-reduce:hidden" />
