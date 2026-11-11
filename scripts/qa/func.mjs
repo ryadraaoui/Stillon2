@@ -13,7 +13,7 @@ for (const [vn, vp] of [["small-mobile", { width: 320, height: 640 }], ["mobile"
   const H = await p.evaluate(() => document.documentElement.scrollHeight);
   for (let y = 0; y < H; y += 700) { await p.evaluate(y => window.scrollTo(0, y), y); await p.waitForTimeout(120); }
   await p.waitForTimeout(800);
-  const o = await p.evaluate(() => { const w = window.innerWidth; const bad = [...document.querySelectorAll("main *, footer *, header *")].filter(e => { if (e.closest(".hscroll, [data-pin], .box3d, .sachet")) return false; const r = e.getBoundingClientRect(); return r.width > 0 && (r.right > w + 2 || r.left < -2); }).slice(0, 4).map(e => e.tagName + "." + String(e.className).slice(0, 50)); return bad; });
+  const o = await p.evaluate(() => { const w = window.innerWidth; const bad = [...document.querySelectorAll("main *, footer *, header *")].filter(e => { if (e.closest(".hscroll, [data-pin], [data-row], .box3d, .sachet")) return false; const r = e.getBoundingClientRect(); return r.width > 0 && (r.right > w + 2 || r.left < -2); }).slice(0, 4).map(e => e.tagName + "." + String(e.className).slice(0, 50)); return bad; });
   ok(`${vn} ${path} no horizontal overflow`, o.length === 0, o.join(" | "));
   const imgs = await p.evaluate(async () => { const u = [...new Set([...document.images].map(i => i.currentSrc || i.src).filter(Boolean))]; const bad = []; for (const x of u) { const r = await fetch(x); if (!r.ok) bad.push(x + " " + r.status); } return bad; });
   ok(`${vn} ${path} images loaded`, imgs.length === 0, imgs.join(","));
@@ -35,20 +35,32 @@ for (const [vn, vp] of [["small-mobile", { width: 320, height: 640 }], ["mobile"
   const top = await p.evaluate(() => document.getElementById("early-access").getBoundingClientRect().top); ok("header CTA lands on the early-access form", Math.abs(top) < 200, String(Math.round(top)));
   const forms = await p.evaluate(() => document.querySelectorAll("main form").length); ok("homepage has exactly one signup form", forms === 1, String(forms));
   } else { await p.goto(base + "/", { waitUntil: "networkidle" }); }
-  const secs = await p.evaluate(() => document.querySelectorAll("main > section").length); ok("homepage has exactly six sections", secs === 6, String(secs));
+  const secs = await p.evaluate(() => document.querySelectorAll("main section").length); ok("homepage has exactly eight sections", secs === 8, String(secs));
   const ctas = await p.evaluate(() => [...document.querySelectorAll("a.btn, button.btn")].map(e => e.textContent.trim().toLowerCase())); if (mode === "prelaunch") ok("primary CTA wording is consistent", ctas.filter(c => c === "get early access").length >= 2 && !ctas.some(c => /buy now|shop now|launch list|tell me/.test(c)), ctas.join(" | "));
   await p.goto(base + "/faq", { waitUntil: "networkidle" }); const b2 = p.locator("#faq-b-2"); await b2.click(); ok("FAQ opens", await b2.getAttribute("aria-expanded") === "true"); ok("FAQ single-open", await p.locator("#faq-b-0").getAttribute("aria-expanded") === "false");
   // reveal pins and progresses
   await p.goto(base + "/", { waitUntil: "networkidle" }); await p.waitForTimeout(1500);
-  await p.evaluate(() => window.scrollTo(0, 0)); await p.waitForTimeout(400); await p.evaluate(() => window.scrollTo(0, innerHeight + 500)); await p.waitForTimeout(1500);
+  await p.evaluate(() => window.scrollTo(0, 0)); await p.waitForTimeout(600);
+  const y0 = await p.evaluate(() => Math.round(document.getElementById("strips").getBoundingClientRect().top)); await p.evaluate(y => window.scrollTo(0, y), y0 + 700); await p.waitForTimeout(1500);
   const st = await p.evaluate(() => ({ pinTop: Math.round(document.querySelector("[data-pin]").getBoundingClientRect().top), tf: document.querySelector("[data-sachet-holder]").style.transform }));
-  ok("reveal is pinned mid-sequence", st.pinTop === 0, JSON.stringify(st)); ok("reveal animates with scroll", st.tf.length > 0 && !st.tf.includes("78%"), st.tf.slice(0, 60));
-  await p.evaluate(() => window.scrollTo(0, innerHeight * 3.4)); await p.waitForTimeout(1200); const rel = await p.evaluate(() => Math.round(document.querySelector("[data-pin]").getBoundingClientRect().top)); ok("reveal releases after about two screens", rel < 0, String(rel));
+  ok("reveal is pinned mid-sequence", st.pinTop === 0, JSON.stringify(st)); ok("reveal animates with scroll", st.tf.length > 0 && !/78%|58%/.test(st.tf), st.tf.slice(0, 60));
+  await p.evaluate(y => window.scrollTo(0, y), y0 + 900 * 3.3); await p.waitForTimeout(1200); const rel = await p.evaluate(() => Math.round(document.querySelector("[data-pin]").getBoundingClientRect().top)); ok("reveal releases after three screens", rel < 0, String(rel));
+  await p.evaluate(() => window.scrollTo(0, 0)); await p.waitForTimeout(600);
+  const c0 = await p.evaluate(() => Math.round(document.getElementById("campaign").getBoundingClientRect().top)); const dist = await p.evaluate(() => { const t = document.querySelector("[data-track]"); return t.scrollWidth - innerWidth; });
+  await p.evaluate(y => window.scrollTo(0, y), c0 + dist * 0.5); await p.waitForTimeout(1500);
+  const cg = await p.evaluate(() => ({ top: Math.round(document.getElementById("campaign").getBoundingClientRect().top), x: Math.round(new DOMMatrix(getComputedStyle(document.querySelector("[data-track]")).transform).m41) }));
+  ok("campaign reel is pinned and moving horizontally", cg.top === 0 && cg.x < -200, JSON.stringify(cg));
+  await p.evaluate(y => window.scrollTo(0, y), c0 + dist + 400); await p.waitForTimeout(1200); const crel = await p.evaluate(() => Math.round(document.getElementById("campaign").getBoundingClientRect().top)); ok("campaign reel releases at its end", crel < 0, String(crel));
   await p.context().close(); }
 // --- reduced motion
 { const p = await page(D, true); await p.goto(base + "/", { waitUntil: "networkidle" }); await p.waitForTimeout(800);
-  const r = await p.evaluate(() => ({ pin: getComputedStyle(document.querySelector("[data-pin]")).display, lenis: document.documentElement.classList.contains("lenis"), h1: getComputedStyle(document.querySelector("h1 span span")).transform, curtain: getComputedStyle(document.querySelector("[data-h-curtain]")).display }));
-  ok("reduced motion: pinned reveal replaced by stills", r.pin === "none", r.pin); ok("reduced motion: no smooth-scroll hijack", !r.lenis); ok("reduced motion: hero shows immediately", r.curtain === "none", r.curtain);
+  const r = await p.evaluate(() => ({ pin: getComputedStyle(document.querySelector("[data-pin]")).display, lenis: document.documentElement.classList.contains("lenis"), h1: getComputedStyle(document.querySelector("h1 span span")).transform, curtain: getComputedStyle(document.querySelector("[data-h-curtain]")).display, track: getComputedStyle(document.querySelector("[data-track]")).overflowX, tick: document.querySelector("[data-row]").style.transform }));
+  ok("reduced motion: pinned reveal replaced by stills", r.pin === "none", r.pin); ok("reduced motion: no smooth-scroll hijack", !r.lenis); ok("reduced motion: hero shows immediately", r.curtain === "none", r.curtain); ok("reduced motion: campaign is a native scroll row", r.track === "auto", r.track); ok("reduced motion: ticker is still", r.tick === "", r.tick);
+  await p.context().close(); }
+// --- touch: campaign is a native swipe row, not pinned
+{ const p = await page(M); await p.goto(base + "/", { waitUntil: "networkidle" }); await p.waitForTimeout(800);
+  const r = await p.evaluate(async () => { const t = document.querySelector("[data-track]"); t.scrollIntoView(); t.scrollLeft = 600; await new Promise(x => setTimeout(x, 400)); return { ox: getComputedStyle(t).overflowX, snap: getComputedStyle(t).scrollSnapType, left: t.scrollLeft, pinned: !!t.closest(".pin-spacer") }; });
+  ok("mobile: campaign swipes natively with snap, no pin", r.ox === "auto" && r.snap.includes("x") && r.left > 100 && !r.pinned, JSON.stringify(r));
   await p.context().close(); }
 // --- mobile menu
 { const p = await page(M); await p.goto(base + "/", { waitUntil: "networkidle" });

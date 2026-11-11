@@ -11,6 +11,7 @@ Nothing below is an approved final asset until the founder signs it off.
 | Hero portrait | home hero | REF-08 "The day isn't done.", black-and-white treatment, pink nail kept | Founder's image, re-graded. 1400 px wide: re-export larger |
 | Cyclist | campaign, story | REF-08 cyclist, black-and-white treatment | Founder's image, re-graded |
 | Boxer, runner | campaign | Generated in Figma, black-and-white treatment, pink kept | Temporary, awaiting approval. 1024 × 1280 |
+| Shades portrait | how it works, step 2 | REF-08 "Not made to stop." portrait, black-and-white treatment | Founder's image, re-graded |
 | Closing portrait | closing | REF-08 wet-hair portrait, black-and-white treatment | Founder's image, re-graded. 602 px wide: re-export larger |
 | Strip in hand | product page | Generated in Figma, black-and-white treatment, pink nail kept | Temporary, awaiting approval |
 | Product renders | product page gallery, cart | REF-02/05 render sheet | Temporary. ~450–550 px wide: re-export at 2000 px |

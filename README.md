@@ -15,7 +15,7 @@ Copy `.env.example` to `.env.local` and fill in what you have. With nothing set 
 
 ## Pages
 
-- `/` — six sections: hero, product reveal + how it works, campaign, formula, early access, closing
+- `/` — eight experiences: hero, ticker, pinned product reveal, how it works, horizontal campaign reel, formula, early access, closing
 - `/products/energy-strips` — product page (full details, safety, FAQ)
 - `/story`, `/faq`, `/shipping`, `/privacy`, `/terms`
 - `/checkout/success` — confirms an order only when Stripe reports the session as paid
@@ -33,7 +33,7 @@ Early-access signups need `NOTIFY_WEBHOOK_URL` in production (the host has no pe
 - `src/lib/site.ts` — every product fact and the FAQ. Edit copy and numbers here.
 - `src/lib/commerce.ts` — Stripe access. The price is read from Stripe, never hard-coded.
 - `src/components/Sachet.tsx`, `Box3D.tsx` — the pack, rebuilt as live artwork from the spec. Replace with print-file exports when available.
-- `src/components/ProductReveal.tsx` — the scroll sequence. `Sections.tsx` — campaign, formula, conversion, closing.
+- `src/components/ProductReveal.tsx` — the pinned product sequence. `Campaign.tsx` — the horizontal reel. `Ticker.tsx` — the scroll-driven type band. `Sections.tsx` — how it works, formula, conversion, closing.
 - `scripts/bw-treatment.py` — the black-and-white campaign grade.
 - `scripts/prepare-assets.py` — how each image in `src/assets` was cut from the reference pack.
 - `docs/IMAGE-STATUS.md` — which images are final and which need replacing. `docs/HIGGSFIELD-PROMPTS.md` — prompts for the missing shots.

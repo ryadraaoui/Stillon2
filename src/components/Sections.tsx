@@ -2,46 +2,54 @@ import Image from "next/image";
 import Link from "next/link";
 import { CTA, EARLY_ACCESS, FORMULA, PRODUCT } from "@/lib/site";
 import { Reveal, Line } from "./Reveal";
-import { Sachet } from "./Sachet";
+import { Sachet, Strip } from "./Sachet";
 import { Box3D } from "./Box3D";
 import { Purchase } from "./Purchase";
-import cyclist from "@/assets/bw-cyclist.webp";
-import boxer from "@/assets/bw-boxer.webp";
-import runner from "@/assets/bw-runner.webp";
+import shades from "@/assets/bw-shades.webp";
 import closing from "@/assets/bw-closing.webp";
 
-/** Section 03. Three frames, one campaign: a dominant cyclist with boxer and runner in an offset pair. */
-export function Campaign() {
-  const tag = "eyebrow absolute bottom-3 left-3 rounded-full bg-white/90 px-3 py-1.5 backdrop-blur";
+/** Experience 04. Three steps, three pictures, eleven words. */
+export function HowItWorks() {
+  const card = "group relative flex min-h-[440px] flex-col overflow-hidden md:min-h-[72svh]";
+  const num = "text-[84px] leading-none font-black md:text-[110px]";
+  const title = "display text-[9vw] md:text-[2.9vw]";
   return (
-    <section id="campaign" aria-label="Campaign" className="wrap bg-white py-24 md:py-36">
-      <div className="grid gap-4 md:grid-cols-12 md:gap-5">
-        <Reveal as="figure" variant="rv-img" className="relative aspect-[1122/1290] overflow-hidden md:col-span-6 md:row-span-2">
-          <Image src={cyclist} alt="Black-and-white, direct flash: a cyclist in a silver helmet and dark wraparound glasses stares into the lens, jersey soaked." fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
-          <figcaption className={tag}>Cyclist</figcaption>
+    <section id="how" aria-label="How it works" className="bg-white">
+      <ol className="grid md:grid-cols-3">
+        <Reveal as="li" className={`${card} bg-bone`}>
+          <div className="p-6 md:p-8">
+            <span className={`${num} text-pinktext`}>1</span>
+            <h3 className={`${title} mt-2`}>Open it.</h3>
+          </div>
+          <div className="relative mt-auto flex justify-center px-10">
+            <Strip className="absolute top-[-16%] z-0 w-[24%] rotate-[4deg] transition-transform duration-700 ease-out group-hover:-translate-y-[18%]" />
+            <Sachet open className="relative z-10 w-[58%] translate-y-[14%] rotate-[-4deg]" label="An opened Still ON. sachet with the white strip coming out of the top" />
+          </div>
         </Reveal>
-        <div className="max-md:order-first md:col-span-6 md:pb-6 md:pl-6">
-          <Reveal as="h2" variant="lines" className="display display-italic text-[17vw] md:text-[8.2vw]">
-            <Line>Not made</Line>
-            <Line delay={90}>
-              to stop<span className="text-pink">.</span>
-            </Line>
-          </Reveal>
-        </div>
-        <Reveal as="figure" variant="rv-img" delay={120} className="relative aspect-[4/5] self-start overflow-hidden max-md:col-span-1 max-md:w-[58%] md:col-span-3 md:col-start-7">
-          <Image src={boxer} alt="Black-and-white, direct flash: a boxer sits forward between rounds, hands wrapped, one pink band at the wrist, a white strip held between two fingers." fill sizes="(max-width: 768px) 58vw, 25vw" className="object-cover" />
-          <figcaption className={tag}>Boxer</figcaption>
+        <Reveal as="li" delay={120} className={`${card} bg-[#e5e5e5]`}>
+          <Image src={shades} alt="Black-and-white, direct flash: a woman in tinted glasses places the strip on her tongue with one finger." fill sizes="(max-width: 768px) 100vw, 34vw" className="object-cover object-[50%_30%] transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]" />
+          <div className="relative p-6 md:p-8">
+            <span className={`${num} text-white mix-blend-difference`}>2</span>
+          </div>
+          <div className="relative mt-auto bg-gradient-to-t from-ink/75 to-transparent p-6 pt-24 text-white md:p-8 md:pt-28">
+            <h3 className={title}>Place it on your tongue.</h3>
+          </div>
         </Reveal>
-        <Reveal as="figure" variant="rv-img" delay={240} className="relative aspect-[4/5] self-start overflow-hidden max-md:-mt-[18%] max-md:ml-auto max-md:w-[52%] md:col-span-3 md:mt-24">
-          <Image src={runner} alt="Black-and-white, direct flash: a sprinter runs straight at the camera, both feet off the ground, a blank pink bib on her top." fill sizes="(max-width: 768px) 52vw, 25vw" className="object-cover object-top" />
-          <figcaption className={tag}>Runner</figcaption>
+        <Reveal as="li" delay={240} className={`${card} bg-ink text-white`}>
+          <div className="p-6 md:p-8">
+            <span className={`${num} text-pink`}>3</span>
+            <h3 className={`${title} mt-2`}>Let it dissolve.</h3>
+          </div>
+          <div className="relative mt-auto grid place-items-center pb-14 md:pb-20">
+            <Strip className="dissolve w-[22%]" />
+          </div>
         </Reveal>
-      </div>
+      </ol>
     </section>
   );
 }
 
-/** Section 04. The formula as printed on pack: two leads set large, the rest in one line. */
+/** Experience 06. The formula as printed on pack: two leads set large, the rest in one line. */
 export function Formula() {
   const [caf, the, b6, b12] = FORMULA;
   return (
@@ -83,7 +91,7 @@ export function Formula() {
   );
 }
 
-/** Section 05. The one signup on the page. Hero, header, closing and footer CTAs all land here. */
+/** Experience 07. The one signup on the page. Hero, header, closing and footer CTAs all land here. */
 export function Conversion() {
   return (
     <section id="early-access" className="wrap scroll-mt-[var(--header-h)] bg-bone py-24 md:py-36">
@@ -116,7 +124,7 @@ export function Conversion() {
   );
 }
 
-/** Section 06. The closing frame. No new information. */
+/** Experience 08. The closing frame. No new information. */
 export function Closing() {
   return (
     <section className="grid overflow-hidden bg-pink text-white md:grid-cols-[1fr_38%]">

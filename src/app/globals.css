@@ -113,7 +113,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .rv, .rv-line > span, .rv-img > * { opacity: 1 !important; transform: none !important; scale: 1 !important; clip-path: none !important; transition: none !important; }
   .marquee-track { animation: none !important; }
-  .float { animation: none !important; }
+  .float, .dissolve { animation: none !important; }
   html { scroll-behavior: auto; }
 }
 
@@ -123,6 +123,8 @@ body {
 
 @keyframes float { 0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); } 50% { transform: translateY(-10px) rotate(calc(var(--r, 0deg) + 1.5deg)); } }
 .float { animation: float 6s ease-in-out infinite; }
+@keyframes dissolve { 0%, 18% { opacity: 1; filter: blur(0); transform: scale(1); } 78%, 100% { opacity: 0; filter: blur(14px); transform: scale(1.18); } }
+.dissolve { animation: dissolve 3.6s ease-in-out infinite; }
 @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
 .page-in { animation: fadein 0.5s ease both; }
 
