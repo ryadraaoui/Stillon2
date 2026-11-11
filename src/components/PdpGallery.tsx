@@ -35,7 +35,7 @@ export function PdpGallery() {
     <div className="flex min-w-0 flex-col gap-3 md:flex-row-reverse">
       <div className={`relative aspect-[4/5] flex-1 overflow-hidden rounded-2xl transition-colors duration-700 ${v.bg}`} aria-live="polite">
         {VIEWS.map((view, n) => (
-          <div key={view.id} aria-hidden={n !== i} className={`absolute inset-0 grid place-items-center transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${n === i ? "opacity-100" : "pointer-events-none scale-[0.96] opacity-0"}`}>
+          <div key={view.id} aria-hidden={n !== i} className={`absolute inset-0 grid place-items-center transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${n === i ? "opacity-100" : "pointer-events-none scale-[0.96] opacity-0"}`}>
             {view.kind === "box" && <Box3D className="w-[44%]" />}
             {view.kind === "front" && <Sachet className="w-[50%]" />}
             {view.kind === "back" && <Sachet side="back" className="w-[50%]" label="Back of the sachet: the three steps and the formula" />}

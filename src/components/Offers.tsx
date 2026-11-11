@@ -22,7 +22,7 @@ export function OnTagPlaceholder({ className = "", caption = true }: { className
         <text x="30" y="70" textAnchor="middle" fontSize="6" fontWeight="800" fill="#111" letterSpacing=".4">TAG</text>
         <circle cx="30" cy="84" r="1.800" fill="#ff006e" />
       </svg>
-      {caption && <figcaption className="mt-1 text-center text-[9px] leading-tight font-semibold tracking-[0.08em] text-grey uppercase">Placeholder</figcaption>}
+      {caption && <figcaption className="mt-1 text-center text-[10px] leading-tight font-semibold tracking-[0.08em] text-grey uppercase">Placeholder</figcaption>}
     </figure>
   );
 }
@@ -32,21 +32,21 @@ function Stage({ boxes, tag }: { boxes: number; tag: boolean }) {
   // x offset (% of stage), scale and z for each of the three box slots, per box count
   const layout: Record<number, [number, number, number][]> = {
     1: [[0, 1, 3], [0, 0.9, 1], [0, 0.9, 1]],
-    2: [[-19, 0.94, 3], [19, 0.94, 2], [19, 0.86, 1]],
-    3: [[-30, 0.86, 3], [0, 0.92, 2], [30, 0.86, 1]],
+    2: [[-21, 0.94, 3], [21, 0.94, 2], [21, 0.86, 1]],
+    3: [[-31, 0.84, 3], [0, 0.9, 2], [31, 0.84, 1]],
   };
   return (
-    <div className="relative mx-auto aspect-[5/4] w-full max-w-[560px]" aria-hidden="true">
+    <div className="relative mx-auto aspect-[4/3] w-full max-w-[600px]" aria-hidden="true">
       {[0, 1, 2].map((i) => {
         const [x, s, z] = layout[boxes][i];
         const on = i < boxes;
         return (
-          <div key={i} className="absolute top-[12%] left-1/2 w-[34%] transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none" style={{ transform: `translateX(calc(-50% + ${x}cqw)) scale(${s})`, opacity: on ? 1 : 0, zIndex: z }}>
+          <div key={i} className="absolute top-[7%] left-1/2 w-[38%] transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none" style={{ transform: `translateX(calc(-50% + ${x}cqw)) scale(${s})`, opacity: on ? 1 : 0, zIndex: z }}>
             <Box3D className="w-full" />
           </div>
         );
       })}
-      <div className={`absolute right-[7%] bottom-[10%] z-10 w-[12%] transition-[opacity,transform] duration-500 motion-reduce:transition-none ${tag ? "opacity-100" : "translate-y-3 opacity-0"}`}>
+      <div className={`absolute right-[5%] bottom-[6%] z-10 w-[12%] transition-[opacity,transform] duration-500 motion-reduce:transition-none ${tag ? "opacity-100" : "translate-y-3 opacity-0"}`}>
         <OnTagPlaceholder />
       </div>
     </div>
@@ -126,7 +126,7 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
       {stage && (
         <div className="@container min-w-0">
           <Stage boxes={offer.boxes} tag={offer.includesOnTag} />
-          <p className="mt-2 text-center text-[11px] font-semibold tracking-[0.12em] text-grey uppercase" aria-live="polite">
+          <p className="mt-4 text-center text-[11px] font-semibold tracking-[0.12em] text-grey uppercase" aria-live="polite">
             {offer.boxes} {offer.boxes === 1 ? "box" : "boxes"} · {offer.strips} strips{offer.includesOnTag ? " · plus the ON Tag" : ""}
           </p>
         </div>
@@ -136,7 +136,7 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
         {/* 1 — the three editions */}
         <fieldset>
           <legend className="sr-only">Choose your bundle</legend>
-          <div className="flex flex-col gap-2.5">
+          <div className="flex flex-col gap-2">
             {offerConfig.offers.map((o) => {
               const on = o.id === offerId;
               const best = o.label === "value" && isBestUnitValue(o);
@@ -144,7 +144,7 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
                 <label
                   key={o.id}
                   data-offer={o.id}
-                  className={`relative grid cursor-pointer grid-cols-[auto_1fr_auto] items-center gap-x-4 rounded-2xl bg-white px-4 py-3.5 transition-shadow duration-200 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-pink sm:px-5 sm:py-4 ${on ? "shadow-[inset_0_0_0_1.5px_var(--color-pink)]" : "shadow-[inset_0_0_0_1px_rgba(17,17,17,0.14)] hover:shadow-[inset_0_0_0_1px_rgba(17,17,17,0.5)]"}`}
+                  className={`relative grid cursor-pointer grid-cols-[auto_1fr_auto] min-h-[76px] items-center gap-x-4 rounded-2xl bg-white px-4 py-4 transition-shadow duration-200 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-pink sm:px-5 ${on ? "shadow-[inset_0_0_0_1.5px_var(--color-pink)]" : "shadow-[inset_0_0_0_1px_rgba(17,17,17,0.14)] hover:shadow-[inset_0_0_0_1px_rgba(17,17,17,0.5)]"}`}
                 >
                   <input type="radio" name={`${uid}-offer`} value={o.id} checked={on} onChange={() => pick(o.id)} className="sr-only" />
                   <span aria-hidden="true" className={`grid h-[18px] w-[18px] place-items-center rounded-full transition-shadow duration-200 ${on ? "shadow-[inset_0_0_0_1.5px_var(--color-pink)]" : "shadow-[inset_0_0_0_1.5px_rgba(17,17,17,0.35)]"}`}>
@@ -153,16 +153,20 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
                   <span className="min-w-0">
                     <span className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
                       <span className="text-[19px] leading-none font-black tracking-[-0.02em] uppercase sm:text-[21px]">{o.name}</span>
-                      {o.label === "recommended" && <span className="text-[10px] font-extrabold tracking-[0.12em] text-pinkdeep uppercase">Recommended · The full experience.</span>}
-                      {best && <span className="text-[10px] font-extrabold tracking-[0.12em] text-grey uppercase">Best unit value</span>}
+                      {o.label === "recommended" && (
+                        <span className="text-[11px] font-extrabold tracking-[0.12em] whitespace-nowrap text-pinkdeep uppercase">
+                          <span className="sr-only">Recommended. </span>The full experience.
+                        </span>
+                      )}
+                      {best && <span className="text-[11px] font-extrabold tracking-[0.12em] whitespace-nowrap text-grey uppercase">Best unit value</span>}
                     </span>
-                    <span className="mt-1.5 block text-[12px] font-bold tracking-[0.07em] text-grey uppercase">{contents(o)}</span>
+                    <span className="mt-2 block text-[12px] font-bold tracking-[0.08em] text-grey uppercase">{contents(o)}</span>
                   </span>
                   <span className="text-right">
                     <span className="block text-[24px] leading-none font-black tracking-[-0.03em] tabular-nums sm:text-[26px]" data-price={o.id}>
                       {money(o.oneTimePrice)}
                     </span>
-                    <span className="mt-1.5 block text-[11px] font-semibold text-grey tabular-nums">{unitLabel(o)}</span>
+                    <span className="mt-2 block text-[11px] font-semibold text-grey tabular-nums">{unitLabel(o)}</span>
                   </span>
                 </label>
               );
@@ -177,7 +181,7 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
             <span className="text-grey normal-case tracking-normal">Your strips. On repeat.</span>
           </legend>
           {offer.subscriptionEligible ? (
-            <div className="flex overflow-hidden rounded-full shadow-[inset_0_0_0_1px_rgba(17,17,17,0.2)]">
+            <div className="flex overflow-hidden rounded-full shadow-[inset_0_0_0_1px_rgba(17,17,17,0.14)]">
               <label className={seg}>
                 <input type="radio" name={`${uid}-type`} value="one-time" checked={effType === "one-time"} onChange={() => pickType("one-time")} className="sr-only" />
                 One-time
@@ -185,19 +189,19 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
               <label className={seg}>
                 <input type="radio" name={`${uid}-type`} value="repeat" checked={effType === "repeat"} onChange={() => pickType("repeat")} className="sr-only" />
                 ON Repeat.
-                {saving > 0 && <span className="ml-2 text-[10px] font-extrabold text-pink">−{money(saving)}</span>}
+                {saving > 0 && <span className={`ml-2 text-[11px] font-extrabold tabular-nums ${effType === "repeat" ? "text-pink" : "text-pinkdeep"}`}>−{money(saving)}</span>}
               </label>
             </div>
           ) : (
-            <p className="flex min-h-[44px] items-center rounded-full px-5 text-[12px] font-bold tracking-[0.08em] text-grey uppercase shadow-[inset_0_0_0_1px_rgba(17,17,17,0.12)]" data-testid="one-time-only">
+            <p className="flex min-h-[44px] items-center rounded-full px-5 text-[12px] font-bold tracking-[0.08em] text-grey uppercase shadow-[inset_0_0_0_1px_rgba(17,17,17,0.14)]" data-testid="one-time-only">
               One-time only. ON Repeat. starts at The Everyday.
             </p>
           )}
           <div className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out motion-reduce:transition-none ${effType === "repeat" ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`} inert={effType !== "repeat"}>
             <div className="overflow-hidden">
-              <div className="flex gap-2 pt-2.5" role="radiogroup" aria-label="Delivery interval">
+              <div className="flex gap-2 pt-2" role="radiogroup" aria-label="Delivery interval">
                 {offerConfig.intervals.map((d) => (
-                  <label key={d} className="flex min-h-[42px] flex-1 cursor-pointer items-center justify-center rounded-full text-[11px] font-bold tracking-[0.06em] uppercase shadow-[inset_0_0_0_1px_rgba(17,17,17,0.2)] transition-shadow duration-200 has-[:checked]:text-pinkdeep has-[:checked]:shadow-[inset_0_0_0_1.5px_var(--color-pink)] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-pink">
+                  <label key={d} className="flex min-h-[44px] flex-1 cursor-pointer items-center justify-center rounded-full text-[11px] font-bold tracking-[0.08em] uppercase shadow-[inset_0_0_0_1px_rgba(17,17,17,0.14)] transition-shadow duration-200 has-[:checked]:text-pinkdeep has-[:checked]:shadow-[inset_0_0_0_1.5px_var(--color-pink)] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-pink">
                     <input type="radio" name={`${uid}-interval`} value={d} checked={interval === d} onChange={() => pickInterval(d)} className="sr-only" />
                     Every {d} days
                   </label>
@@ -241,7 +245,8 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
             <label htmlFor={`${uid}-email`} className="sr-only">
               Email address
             </label>
-            <div className="flex flex-col gap-2 sm:flex-row sm:rounded-full sm:p-1.5 sm:shadow-[inset_0_0_0_1.5px_var(--color-ink)]">
+            <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:gap-x-0 sm:gap-y-3">
+              <div aria-hidden="true" className="pointer-events-none col-start-1 col-end-3 row-start-1 hidden rounded-full shadow-[inset_0_0_0_1.5px_var(--color-ink)] sm:block" />
               <input
                 id={`${uid}-email`}
                 type="email"
@@ -254,22 +259,22 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
                 onChange={(e) => setEmail(e.target.value)}
                 aria-describedby={state === "error" ? `${uid}-err` : `${uid}-note`}
                 aria-invalid={state === "error" || undefined}
-                className="min-h-[52px] min-w-0 flex-1 rounded-full bg-transparent px-5 text-base font-medium text-ink outline-none placeholder:text-grey/80 max-sm:shadow-[inset_0_0_0_1.5px_var(--color-ink)]"
+                className="col-start-1 row-start-1 min-h-[56px] min-w-0 rounded-full bg-transparent px-5 text-base font-medium text-ink outline-none placeholder:text-grey max-sm:shadow-[inset_0_0_0_1.5px_var(--color-ink)] sm:min-h-[64px] sm:pl-6"
               />
               <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 opacity-0" />
-              <button type="submit" disabled={state === "busy"} className="btn btn-ink">
+              <label className="flex cursor-pointer items-start gap-3 px-1 text-[13px] leading-snug text-grey max-sm:row-start-2 sm:col-span-2 sm:row-start-2">
+                <input type="checkbox" name="consent" required checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 h-[18px] w-[18px] flex-none accent-[#ff006e]" />
+                <span>
+                  Yes, email me about the Still ON. launch. Unsubscribe any time.{" "}
+                  <Link href="/privacy" className="underline underline-offset-2">
+                    Privacy
+                  </Link>
+                </span>
+              </label>
+              <button type="submit" disabled={state === "busy"} className="btn btn-ink max-sm:row-start-3 sm:col-start-2 sm:row-start-1 sm:m-1.5">
                 {state === "busy" ? "Adding you…" : CTA}
               </button>
             </div>
-            <label className="mt-3 flex cursor-pointer items-start gap-3 px-1 text-[13px] leading-snug text-grey">
-              <input type="checkbox" name="consent" required checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 h-[18px] w-[18px] flex-none accent-[#ff006e]" />
-              <span>
-                Yes, email me about the Still ON. launch. Unsubscribe any time.{" "}
-                <Link href="/privacy" className="underline underline-offset-2">
-                  Privacy
-                </Link>
-              </span>
-            </label>
             {state === "error" && (
               <p id={`${uid}-err`} role="alert" className="mt-2 px-1 text-sm font-semibold text-pinkdeep">
                 {msg}

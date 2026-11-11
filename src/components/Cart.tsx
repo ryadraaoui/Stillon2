@@ -151,9 +151,9 @@ function CartDrawer() {
         aria-modal="true"
         aria-label="Your cart"
         data-lenis-prevent
-        className={`absolute top-0 right-0 flex h-full w-full max-w-[440px] flex-col bg-ivory shadow-2xl transition-transform duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+        className={`absolute top-0 right-0 flex h-full w-full max-w-[440px] flex-col bg-ivory shadow-2xl transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >
-        <div className="flex items-center justify-between border-b border-ink/10 px-6 py-5">
+        <div className="flex items-center justify-between border-b border-ink/15 px-6 py-5">
           <h2 className="display text-2xl">
             Cart <span className="text-pink">({qty})</span>
           </h2>
@@ -197,7 +197,7 @@ function CartDrawer() {
                 </div>
               </div>
             </div>
-            <div className="border-t border-ink/10 px-6 py-6">
+            <div className="border-t border-ink/15 px-6 py-6">
               <div className="flex items-baseline justify-between">
                 <span className="eyebrow">Subtotal</span>
                 <span className="text-2xl font-black tabular-nums" data-testid="subtotal">
@@ -206,7 +206,7 @@ function CartDrawer() {
               </div>
               <p className="mt-1 text-xs text-grey">Shipping and taxes are calculated at checkout.</p>
               {error && (
-                <p role="alert" className="mt-3 rounded-md bg-pink/10 px-3 py-2 text-sm font-semibold text-pinkdeep">
+                <p role="alert" className="mt-3 rounded-lg bg-pink/10 px-3 py-2 text-sm font-semibold text-pinkdeep">
                   {error}
                 </p>
               )}

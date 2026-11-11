@@ -117,11 +117,11 @@ export function ProductReveal() {
         </div>
 
         {FRAMES.map((f, i) => (
-          <div key={f.n} data-cap className={`absolute bottom-[6svh] left-[var(--gutter)] z-20 max-w-[min(84vw,360px)] md:bottom-[10svh] ${i === 2 ? "text-white" : "text-ink"}`}>
+          <div key={f.n} data-cap className={`absolute bottom-[6svh] left-[var(--gutter)] z-20 max-w-[min(84vw,400px)] md:bottom-[10svh] ${i === 2 ? "text-white" : "text-ink"}`}>
             <p className="eyebrow mb-2 flex items-center gap-3">
               <span className={i === 2 ? "" : "text-pinkdeep"}>{f.n}</span> {f.t}
             </p>
-            <p className="text-xl leading-snug font-bold md:text-2xl">{f.p}</p>
+            <p className="text-xl leading-snug font-bold text-balance md:text-2xl">{f.p}</p>
           </div>
         ))}
 

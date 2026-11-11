@@ -41,7 +41,7 @@ export function Hero() {
 
   return (
     <section ref={root} className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden bg-[#fcfcfc] pt-[var(--header-h)]">
-      <div className="absolute inset-x-0 top-0 h-[66svh] overflow-hidden md:inset-y-0 md:top-0 md:right-0 md:left-auto md:h-full md:w-[58%]">
+      <div className="absolute inset-x-0 top-0 h-[56svh] overflow-hidden md:inset-y-0 md:top-0 md:right-0 md:left-auto md:h-full md:w-[58%]">
         <Image
           data-h-img
           src={hero}
@@ -50,13 +50,13 @@ export function Hero() {
           fetchPriority="high"
           fill
           sizes="(max-width: 768px) 100vw, 58vw"
-          className="object-cover object-[50%_12%] md:object-[42%_30%]"
+          className="object-cover object-[50%_34%] md:object-[42%_30%]"
         />
         <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#fcfcfc] to-transparent md:inset-y-0 md:right-auto md:left-0 md:h-full md:w-1/4 md:bg-gradient-to-r" />
         <div data-h-curtain aria-hidden="true" className="absolute inset-0 bg-[#fcfcfc] motion-reduce:hidden" />
       </div>
 
-      <div className="pointer-events-none absolute top-[calc(var(--header-h)+25svh)] right-[5vw] z-20 w-[21vw] max-w-[120px] md:top-[50%] md:right-auto md:left-[42%] md:w-[11vw] md:max-w-[190px]">
+      <div className="pointer-events-none absolute top-[calc(var(--header-h)+9svh)] right-[5vw] z-20 w-[19vw] max-w-[104px] md:top-[50%] md:right-auto md:left-[42%] md:w-[11vw] md:max-w-[190px]">
         <div data-h-sachet>
           <Sachet className="float w-full" style={{ "--r": "-9deg" } as React.CSSProperties} />
         </div>
@@ -75,16 +75,16 @@ export function Hero() {
             </span>
           </span>
         </h1>
-        <div className="mt-6 flex flex-col gap-5 md:mt-8 md:flex-row md:items-center md:gap-10">
-          <div data-h-sub className="max-w-[30ch]">
+        <div className="mt-6 flex flex-col gap-6 md:mt-8 md:flex-row md:items-center md:gap-12">
+          <div data-h-sub className="max-w-[34ch]">
             <p className="text-[21px] leading-tight font-black md:text-2xl">Energy strips. Made for whatever comes next.</p>
-            <p className="mt-2 text-[15px] font-semibold text-ink/80">Dissolvable strips with caffeine + L‑theanine.</p>
+            <p className="mt-2 text-[15px] font-semibold text-ink/80">Dissolvable strips with caffeine&nbsp;+&nbsp;L‑theanine.</p>
           </div>
-          <div data-h-cta className="flex flex-wrap gap-3">
-            <Link href={EARLY_ACCESS} className="btn btn-ink" onClick={() => track("hero_cta_click", { cta: "early_access" })}>
+          <div data-h-cta className="flex flex-wrap gap-2 sm:gap-3">
+            <Link href={EARLY_ACCESS} className="btn btn-compact btn-ink" onClick={() => track("hero_cta_click", { cta: "early_access" })}>
               {CTA}
             </Link>
-            <Link href="/#strips" className="btn btn-line" onClick={() => track("product_discovery", { from: "hero" })}>
+            <Link href="/#strips" className="btn btn-compact btn-line" onClick={() => track("product_discovery", { from: "hero" })}>
               Discover the strips
             </Link>
           </div>

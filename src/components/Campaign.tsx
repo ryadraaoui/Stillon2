@@ -67,7 +67,7 @@ export function Campaign() {
       <div data-track className="hscroll items-center gap-4 px-[var(--gutter)] md:gap-6" tabIndex={0} role="group" aria-label="Campaign images. Swipe or scroll sideways.">
         <div className={`flex ${H} w-[86vw] flex-col justify-between md:w-[50vw]`}>
           <p className="eyebrow text-grey">Campaign 01</p>
-          <h2 data-title className="display display-italic text-[19vw] whitespace-nowrap md:text-[10.5vw]">
+          <h2 data-title className="display display-italic text-[16.5vw] whitespace-nowrap md:text-[10.5vw]">
             Not made
             <br />
             to stop<span className="text-pink">.</span>

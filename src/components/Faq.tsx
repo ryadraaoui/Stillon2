@@ -27,7 +27,7 @@ export function Faq({ limit, heading = true }: { limit?: number; heading?: boole
                     </span>
                   </button>
                 </h3>
-                <div id={`faq-p-${i}`} role="region" aria-labelledby={`faq-b-${i}`} inert={!on} className={`grid transition-[grid-template-rows,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${on ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+                <div id={`faq-p-${i}`} role="region" aria-labelledby={`faq-b-${i}`} inert={!on} className={`grid transition-[grid-template-rows,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${on ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
                   <div className="overflow-hidden">
                     <p className="max-w-[58ch] pb-7 text-[17px] text-grey">{f.a}</p>
                   </div>

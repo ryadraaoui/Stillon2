@@ -4,7 +4,7 @@ import { Logo } from "./Brand";
 
 export function Footer() {
   const links: [string, string][] = [
-    ["/products/energy-strips", "The strips"],
+    ["/products/energy-strips", "Shop"],
     ["/story", "Our story"],
     ["/faq", "FAQ"],
     ["/shipping", "Shipping & returns"],
@@ -40,7 +40,7 @@ export function Footer() {
           </Link>
         </nav>
       </div>
-      <div className="mt-10 flex flex-col gap-2 border-t border-ink/10 pt-5 text-xs text-grey md:flex-row md:justify-between">
+      <div className="mt-10 flex flex-col gap-2 border-t border-ink/15 pt-5 text-xs text-grey md:flex-row md:justify-between">
         <p>
           © {new Date().getFullYear()} Still ON. · Contains caffeine: 50 mg per strip. Read the label before use.
         </p>

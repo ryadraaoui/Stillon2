@@ -82,10 +82,10 @@ export function Conversion({ live }: { live: boolean }) {
 export function Closing() {
   return (
     <section data-nav-tone="dark" className="grid overflow-hidden bg-pink text-white md:grid-cols-[1fr_38%]">
-      <div className="relative h-[78vw] md:order-last md:h-auto">
+      <div className="relative h-[72vw] md:order-last md:h-auto">
         <Image src={closing} alt="" fill sizes="(max-width: 768px) 100vw, 38vw" className="object-cover object-[50%_22%]" />
       </div>
-      <div className="wrap flex flex-col justify-end py-14 md:min-h-[86svh] md:py-20">
+      <div className="wrap flex flex-col justify-end py-16 md:min-h-[72svh] md:py-20">
         <Reveal as="h2" variant="lines" className="display display-italic text-[20vw] md:text-[13vw]">
           <Line>The day</Line>
           <Line delay={90}>isn’t</Line>

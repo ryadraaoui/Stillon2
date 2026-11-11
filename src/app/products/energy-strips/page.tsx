@@ -47,7 +47,7 @@ export default async function ProductPage({ searchParams }: PageProps<"/products
           <Link href="/" className="link-u">Home</Link> <span aria-hidden="true">/</span> <span aria-current="page" className="text-ink">The strips</span>
         </nav>
         {sp?.checkout === "cancelled" && (
-          <p role="status" className="mb-5 rounded-xl bg-bone px-5 py-4 text-sm font-semibold">
+          <p role="status" className="mb-5 rounded-2xl bg-bone px-5 py-4 text-sm font-semibold">
             Checkout cancelled. Nothing was charged, and your cart is still here.
           </p>
         )}
@@ -87,10 +87,10 @@ export default async function ProductPage({ searchParams }: PageProps<"/products
               <tbody>
                 {FORMULA.map((f) => (
                   <tr key={f.en} className="border-b border-ink/15">
-                    <th scope="row" className="py-3.5 text-[15px] font-bold">
+                    <th scope="row" className="py-4 text-[15px] font-bold">
                       {f.en} <span className="font-normal text-grey">/ {f.fr}</span>
                     </th>
-                    <td className="py-3.5 text-right text-[15px] font-black tabular-nums">
+                    <td className="py-4 text-right text-[15px] font-black tabular-nums">
                       {f.amount} {f.unit}
                     </td>
                   </tr>
@@ -101,7 +101,7 @@ export default async function ProductPage({ searchParams }: PageProps<"/products
             <h2 className={h2}>How to use · Mode d’emploi</h2>
             <ol className="grid grid-cols-3 gap-2">
               {["Open it.", "Place it on your tongue.", "Let it dissolve."].map((t, i) => (
-                <li key={t} className="rounded-xl bg-bone p-4">
+                <li key={t} className="rounded-2xl bg-bone p-4">
                   <span className="text-3xl font-black text-pinktext">{i + 1}</span>
                   <p className="mt-2 text-sm leading-tight font-black uppercase">{t}</p>
                 </li>
@@ -111,7 +111,7 @@ export default async function ProductPage({ searchParams }: PageProps<"/products
             <h2 className={h2}>Details</h2>
             <dl className="border-t-2 border-ink">
               {specs.map(([k, v]) => (
-                <div key={k} className="grid grid-cols-[110px_1fr] gap-4 border-b border-ink/15 py-3.5 text-[15px]">
+                <div key={k} className="grid grid-cols-[110px_1fr] gap-4 border-b border-ink/15 py-4 text-[15px]">
                   <dt className="font-bold">{k}</dt>
                   <dd className="text-grey">{v}</dd>
                 </div>
@@ -119,7 +119,7 @@ export default async function ProductPage({ searchParams }: PageProps<"/products
             </dl>
 
             <h2 className={h2}>Safety</h2>
-            <div className="rounded-xl border border-ink/15 p-5 text-[15px] text-grey">
+            <div className="rounded-2xl border border-ink/15 p-5 text-[15px] text-grey">
               <p>
                 <strong className="text-ink">Contains caffeine: 50 mg per strip.</strong> Count it against the rest of your day. Always read and follow the label on the pack.
               </p>
