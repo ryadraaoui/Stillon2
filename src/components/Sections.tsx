@@ -6,6 +6,7 @@ import { Sachet } from "./Sachet";
 import { Box3D } from "./Box3D";
 import { Purchase } from "./Purchase";
 import { OfferConfigurator } from "./Offers";
+import { MESSAGE } from "@/config/copy";
 import closing from "@/assets/bw-closing.webp";
 
 /** Section 04. The formula as printed on pack: two leads set large, the rest in one line. */
@@ -45,7 +46,13 @@ export function Formula() {
       <p className="border-t border-ink/15 pt-6 text-[15px] font-bold">
         Also in every strip: vitamin B6 {b6.amount} {b6.unit} · vitamin B12 {b12.amount} {b12.unit} · {PRODUCT.flavourEn.toLowerCase()} flavour.
       </p>
-      <p className="mt-2 text-xs text-grey">Amounts as printed on pack. Contains caffeine. Read the label before use.</p>
+      <p className="mt-6 flex max-w-[60ch] items-start gap-3 text-[15px]" data-testid="rtb">
+        <span aria-hidden="true" className="mt-[0.45em] h-2 w-2 flex-none rounded-full bg-pink" />
+        <span>
+          <strong className="font-black uppercase">It’s on the label.</strong> <span className="text-grey">Every sachet states what is in the strip and how much, per strip, in French and English.</span>
+        </span>
+      </p>
+      <p className="mt-4 text-xs text-grey">Amounts as printed on pack. Contains caffeine. Read the label before use.</p>
     </section>
   );
 }
@@ -61,7 +68,10 @@ export function Conversion({ live }: { live: boolean }) {
             <span className="text-pink">.</span>
           </Line>
         </Reveal>
-        <Reveal className="text-[19px] font-bold md:pb-3 md:text-xl">Same strips. Your call.</Reveal>
+        <Reveal className="md:pb-3 md:text-right">
+          <p className="text-[19px] font-black uppercase md:text-xl">{MESSAGE.offer}</p>
+          <p className="mt-1 text-[15px] text-grey">{MESSAGE.offerSupport}</p>
+        </Reveal>
       </div>
       {live ? (
         <div className="grid items-center gap-14 md:grid-cols-2">

@@ -19,7 +19,7 @@ export type Offer = {
   includesOnTag: boolean;
   subscriptionEligible: boolean;
   /** small typographic label; "value" is only shown if the maths below agrees */
-  label?: "recommended" | "value";
+  label?: "entry" | "recommended" | "value";
 };
 
 export const offerConfig = {
@@ -28,9 +28,9 @@ export const offerConfig = {
   defaultOffer: "everyday" as OfferId,
   intervals: [30, 60, 90] as const, // days between deliveries
   offers: [
-    { id: "intro", name: "The Intro.", line: "30 strips. No commitment.", boxes: 1, strips: 30, oneTimePrice: 39, subscriptionPrice: null, includesOnTag: false, subscriptionEligible: false },
-    { id: "everyday", name: "The Everyday.", line: "The complete Still ON. experience.", boxes: 2, strips: 60, oneTimePrice: 69, subscriptionPrice: 62, includesOnTag: true, subscriptionEligible: true, label: "recommended" },
-    { id: "stockup", name: "The Stockup.", line: "More on hand. Less per strip.", boxes: 3, strips: 90, oneTimePrice: 89, subscriptionPrice: 80, includesOnTag: true, subscriptionEligible: true, label: "value" },
+    { id: "intro", name: "The Intro.", line: "One box to try the format. No commitment.", boxes: 1, strips: 30, oneTimePrice: 39, subscriptionPrice: null, includesOnTag: false, subscriptionEligible: false, label: "entry" },
+    { id: "everyday", name: "The Everyday.", line: "Two boxes and the ON Tag to carry them in.", boxes: 2, strips: 60, oneTimePrice: 69, subscriptionPrice: 62, includesOnTag: true, subscriptionEligible: true, label: "recommended" },
+    { id: "stockup", name: "The Stockup.", line: "Three boxes. More on hand, less per strip.", boxes: 3, strips: 90, oneTimePrice: 89, subscriptionPrice: 80, includesOnTag: true, subscriptionEligible: true, label: "value" },
   ] satisfies Offer[] as Offer[],
 };
 export type Interval = (typeof offerConfig.intervals)[number];

@@ -3,6 +3,8 @@ import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Box3D } from "./Box3D";
+import { Benefits } from "./Benefits";
+import { track } from "@/lib/track";
 import { Sachet, Strip } from "./Sachet";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -51,9 +53,10 @@ export function ProductReveal() {
       gsap.set(strip, { autoAlpha: 0, xPercent: -50 });
       gsap.set(q("[data-steps]"), { autoAlpha: 0 });
       gsap.set(q("[data-pin] [data-step]"), { autoAlpha: 0, x: 30 });
+      let done = false;
       const tl = gsap.timeline({
         defaults: { ease: "power2.inOut" },
-        scrollTrigger: { trigger: q("[data-pin]")[0], start: "top top", end: "+=330%", pin: true, scrub: 0.7, anticipatePin: 1, invalidateOnRefresh: true },
+        scrollTrigger: { trigger: q("[data-pin]")[0], start: "top top", end: "+=330%", pin: true, scrub: 0.7, anticipatePin: 1, invalidateOnRefresh: true, onLeave: () => !done && ((done = true), track("product_reveal_complete")) },
       });
       const swap = (from: number, to: number, at: number) => tl.to(caps[from], { autoAlpha: 0, y: -24, duration: 0.35 }, at).to(caps[to], { autoAlpha: 1, y: 0, duration: 0.45 }, at + 0.3);
       // 01 → 02: the box leaves, one sachet comes forward
@@ -155,6 +158,12 @@ export function ProductReveal() {
           </figure>
         </div>
         <Steps className="mx-auto mt-14 max-w-xl" />
+      </div>
+
+      {/* Why the format is useful: four benefits, directly after the reveal, same section */}
+      <div className="wrap bg-white pt-10 pb-20 md:pt-14 md:pb-28">
+        <p className="eyebrow mb-4 text-grey">Why a strip</p>
+        <Benefits source="home" />
       </div>
     </section>
   );

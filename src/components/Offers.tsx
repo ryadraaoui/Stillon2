@@ -22,7 +22,7 @@ export function OnTagPlaceholder({ className = "", caption = true }: { className
         <text x="30" y="70" textAnchor="middle" fontSize="6" fontWeight="800" fill="#111" letterSpacing=".4">TAG</text>
         <circle cx="30" cy="84" r="1.800" fill="#ff006e" />
       </svg>
-      {caption && <figcaption className="mt-1 text-center text-[10px] leading-tight font-semibold tracking-[0.08em] text-grey uppercase">Placeholder</figcaption>}
+      {caption && <figcaption className="mt-1 text-center text-[10px] leading-tight font-semibold tracking-[0.08em] text-grey uppercase">ON Tag coming soon</figcaption>}
     </figure>
   );
 }
@@ -46,7 +46,7 @@ function Stage({ boxes, tag }: { boxes: number; tag: boolean }) {
           </div>
         );
       })}
-      <div className={`absolute right-[5%] bottom-[6%] z-10 w-[12%] transition-[opacity,transform] duration-500 motion-reduce:transition-none ${tag ? "opacity-100" : "translate-y-3 opacity-0"}`}>
+      <div className={`absolute right-[6%] bottom-[4%] z-10 w-[13%] transition-[opacity,transform] duration-500 motion-reduce:transition-none ${tag ? "opacity-100" : "translate-y-3 opacity-0"}`}>
         <OnTagPlaceholder />
       </div>
     </div>
@@ -158,7 +158,8 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
                           <span className="sr-only">Recommended. </span>The full experience.
                         </span>
                       )}
-                      {best && <span className="text-[11px] font-extrabold tracking-[0.12em] whitespace-nowrap text-grey uppercase">Best unit value</span>}
+                      {o.label === "entry" && <span className="text-[11px] font-extrabold tracking-[0.12em] whitespace-nowrap text-grey uppercase">No commitment</span>}
+                      {best && <span className="text-[11px] font-extrabold tracking-[0.12em] whitespace-nowrap text-grey uppercase">Lowest price per strip</span>}
                     </span>
                     <span className="mt-2 block text-[12px] font-bold tracking-[0.08em] text-grey uppercase">{contents(o)}</span>
                   </span>
@@ -178,7 +179,7 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
         <fieldset className="mt-5">
           <legend className="mb-2 flex w-full items-baseline justify-between text-[11px] font-bold tracking-[0.12em] uppercase">
             <span>How often</span>
-            <span className="text-grey normal-case tracking-normal">Your strips. On repeat.</span>
+            <span className="text-grey normal-case tracking-normal">Your strips. On repeat. Optional.</span>
           </legend>
           {offer.subscriptionEligible ? (
             <div className="flex overflow-hidden rounded-full shadow-[inset_0_0_0_1px_rgba(17,17,17,0.14)]">
@@ -224,7 +225,10 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
               {effType === "repeat" && <span className="ml-1 text-[12px] font-bold text-grey">per delivery</span>}
             </p>
           </div>
-          <p className="mt-2 text-[12px] leading-relaxed text-grey">
+          <p className="mt-2 text-[13px] font-bold" data-testid="offer-line">
+            {offer.line}
+          </p>
+          <p className="mt-1 text-[12px] leading-relaxed text-grey">
             {offer.boxes} {offer.boxes === 1 ? "box" : "boxes"} · {offer.strips} strips · {unitLabel(offer, effType)}.
             {offer.includesOnTag && <span data-testid="tag-note"> ON Tag included with your first order.{effType === "repeat" ? " Refills only after your first delivery." : ""}</span>}
             {effType === "repeat" && " Cancellation and account terms will be published before ON Repeat. goes live."}
@@ -281,7 +285,7 @@ export function OfferConfigurator({ source, stage = true }: { source: string; st
               </p>
             )}
             <p id={`${uid}-note`} className="mt-4 px-1 text-[11px] leading-relaxed text-grey" data-testid="disclosure">
-              <strong className="font-bold text-ink">You’re early. Good.</strong> Preview pricing in {offerConfig.currency}. Subject to change. Signing up doesn’t take payment, reserve stock or lock this price.
+              <strong className="font-bold text-ink">You’re early. Good.</strong> Preview pricing in {offerConfig.currency}. Subject to change. This is early access, not a purchase: no payment, no reserved stock, no locked price.
             </p>
           </form>
         )}

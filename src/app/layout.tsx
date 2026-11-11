@@ -13,12 +13,12 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
-  title: { default: "Still ON. — Energy strips with caffeine + L-theanine", template: "%s — Still ON." },
-  description: "The day isn't done. Still ON. makes dissolvable energy strips with caffeine + L-theanine. Mint. 30 to a box. Get early access.",
+  title: { default: "Still ON. — Caffeine, without the can", template: "%s — Still ON." },
+  description: "Caffeine, without the can. Still ON. is a dissolvable caffeine strip: 50 mg per strip, no water needed, pocket-sized. Get early access.",
   applicationName: "Still ON.",
   alternates: { canonical: "/" },
-  openGraph: { type: "website", siteName: "Still ON.", title: "Still ON. — The day isn't done.", description: "Dissolvable energy strips with caffeine + L-theanine. Get early access.", locale: "en_CA", url: "/" },
-  twitter: { card: "summary_large_image", title: "Still ON. — The day isn't done.", description: "Dissolvable energy strips with caffeine + L-theanine. Get early access." },
+  openGraph: { type: "website", siteName: "Still ON.", title: "Still ON. — The day isn't done.", description: "Caffeine, without the can. Dissolvable caffeine strips. Get early access.", locale: "en_CA", url: "/" },
+  twitter: { card: "summary_large_image", title: "Still ON. — The day isn't done.", description: "Caffeine, without the can. Dissolvable caffeine strips. Get early access." },
 };
 export const viewport: Viewport = { themeColor: "#f7f3ee", width: "device-width", initialScale: 1 };
 

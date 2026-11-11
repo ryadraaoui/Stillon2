@@ -108,7 +108,7 @@ export function Campaign() {
         <Photo n="03" label="Runner" src={runner} alt="Black-and-white, direct flash: a sprinter runs straight at the camera, both feet off the ground, a blank pink bib on her top." />
 
         <div className={`flex ${H} w-[80vw] flex-col justify-center gap-8 md:w-[34vw] md:pl-8`}>
-          <p className="max-w-[18ch] text-2xl leading-tight font-black md:text-4xl">Energy strips with caffeine + L‑theanine.</p>
+          <p className="max-w-[16ch] text-2xl leading-tight font-black md:text-4xl">Goes where you go. Fits in a pocket.</p>
           <Link href={EARLY_ACCESS} className="btn btn-ink self-start">
             {CTA}
           </Link>

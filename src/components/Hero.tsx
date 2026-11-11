@@ -5,6 +5,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { CTA, EARLY_ACCESS } from "@/lib/site";
 import { track } from "@/lib/track";
+import { MESSAGE } from "@/config/copy";
 import { Sachet } from "./Sachet";
 import hero from "@/assets/bw-hero.webp";
 
@@ -45,7 +46,7 @@ export function Hero() {
         <Image
           data-h-img
           src={hero}
-          alt="Black-and-white close portrait, direct flash: a woman looks into the camera with a small white Still ON. strip on her tongue. One fingernail is hot pink."
+          alt="Black-and-white close portrait, direct flash: a woman looks into the camera with a small white Still ON. caffeine strip dissolving on her tongue. One fingernail is hot pink."
           priority
           fetchPriority="high"
           fill
@@ -63,7 +64,7 @@ export function Hero() {
       </div>
 
       <div className="wrap relative z-10 pb-8 md:pb-12">
-        <h1 className="display display-italic text-[19vw] md:text-[12.4vw]">
+        <h1 className="display display-italic text-[18vw] md:text-[11.6vw]">
           {["The day", "isn’t"].map((t) => (
             <span key={t} data-h-line className="-mb-[0.08em] block overflow-hidden pr-[0.1em] pb-[0.08em]">
               <span className="block">{t}</span>
@@ -75,11 +76,13 @@ export function Hero() {
             </span>
           </span>
         </h1>
-        <div className="mt-6 flex flex-col gap-6 md:mt-8 md:flex-row md:items-center md:gap-12">
-          <div data-h-sub className="max-w-[34ch]">
-            <p className="text-[21px] leading-tight font-black md:text-2xl">Energy strips. Made for whatever comes next.</p>
-            <p className="mt-2 text-[15px] font-semibold text-ink/80">Dissolvable strips with caffeine&nbsp;+&nbsp;L‑theanine.</p>
-          </div>
+        <p data-h-sub data-testid="advantage" className="display mt-4 text-[6vw] leading-none whitespace-nowrap md:mt-5 md:text-[2.6vw]">
+          Caffeine, without the can<span className="text-pink">.</span>
+        </p>
+        <div className="mt-4 flex flex-col gap-5 md:mt-5 md:flex-row md:items-center md:gap-12">
+          <p data-h-sub className="max-w-[40ch] text-[16px] leading-snug font-semibold text-ink/85 md:text-[17px]">
+            {MESSAGE.descriptor}
+          </p>
           <div data-h-cta className="flex flex-wrap gap-2 sm:gap-3">
             <Link href={EARLY_ACCESS} className="btn btn-compact btn-ink" onClick={() => track("hero_cta_click", { cta: "early_access" })}>
               {CTA}

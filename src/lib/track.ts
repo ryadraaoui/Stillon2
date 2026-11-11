@@ -7,6 +7,9 @@
 export type TrackEvent =
   | "hero_cta_click"
   | "product_discovery"
+  | "product_reveal_complete"
+  | "benefits_view"
+  | "product_page_view"
   | "offer_impression"
   | "offer_select"
   | "purchase_type_select"
@@ -17,7 +20,7 @@ export type TrackEvent =
 
 export function track(event: TrackEvent, props: Record<string, string | number | boolean> = {}) {
   if (typeof window === "undefined") return;
-  const payload = { event, ...props };
+  const payload = { event, copy_variant: process.env.NEXT_PUBLIC_COPY_VARIANT ?? "a", ...props };
   const w = window as unknown as { dataLayer?: unknown[] };
   if (Array.isArray(w.dataLayer)) w.dataLayer.push(payload);
   window.dispatchEvent(new CustomEvent("stillon:track", { detail: payload }));

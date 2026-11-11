@@ -30,6 +30,7 @@ Early-access signups need `NOTIFY_WEBHOOK_URL` in production (the host has no pe
 
 ## Where things live
 
+- `src/config/copy.ts` — message hierarchy, the four benefits, usage facts and the format comparison, each with its source (see `docs/CLAIMS.md`, `docs/MEASUREMENT.md`).
 - `src/config/offers.ts` — bundles and preview prices, one source of truth (see `docs/OFFERS.md`).
 
 - `src/lib/site.ts` — every product fact and the FAQ. Edit copy and numbers here.

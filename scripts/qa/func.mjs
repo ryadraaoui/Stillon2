@@ -96,6 +96,20 @@ for (const [vn, vp] of [["desktop", D], ["tablet", { width: 820, height: 1180 }]
 if (mode === "prelaunch") {
   const p = await page(D); await p.goto(base + "/products/energy-strips", { waitUntil: "networkidle" });
   ok("prelaunch: no price shown", await p.locator('[data-testid="price"]').count() === 0); ok("prelaunch: header shows Launch list, no cart", await p.locator('[data-testid="cart-count"]').count() === 0);
+  // --- V4 positioning and claims
+  { const q = await page(D); await q.goto(base + "/", { waitUntil: "load" }); await q.waitForTimeout(700); const hero = await q.locator("main section").first().innerText();
+    ok("hero: promise, then the functional advantage, then the descriptor", /THE DAY\s+ISN’T\s+DONE/i.test(hero) && /caffeine, without the can/i.test(hero) && /dissolvable caffeine strips/i.test(hero), hero.slice(0, 160).replace(/\n/g, " | "));
+    const sizes = await q.evaluate(() => [parseFloat(getComputedStyle(document.querySelector("h1")).fontSize), parseFloat(getComputedStyle(document.querySelector('[data-testid="advantage"]')).fontSize)]); ok("hero: the emotional line stays dominant", sizes[0] > sizes[1] * 3, sizes.join(" vs "));
+    const ben = await q.evaluate(() => { const el = document.querySelector('#strips [data-testid="benefits"]'); return el ? [...el.querySelectorAll("h3")].map(h => h.textContent.trim()) : []; }); ok("benefits: four, inside the product reveal section", ben.length === 4 && /no water/i.test(ben[0]) && /50 mg/i.test(ben[1]) && /pocket/i.test(ben[2]), ben.join(" | "));
+    ok("offer heading: Your caffeine. Your call.", /your caffeine\. your call\./i.test(await q.locator("#early-access").innerText()));
+    ok("formula: reason to believe is the label itself", /on the label/i.test(await q.locator('[data-testid="rtb"]').innerText()));
+    const banned = /no crash|no jitter|jitter-free|zero sugar|sugar[- ]free|instant energy|faster than coffee|clinically|lab[- ]tested|third[- ]party|certified|gmp|doctor|bestseller|most popular|\d[\d,]*\+? (customers|reviews)|★|healthier/i;
+    for (const path of ["/", "/products/energy-strips", "/story", "/faq"]) { await q.goto(base + path, { waitUntil: "load" }); await q.waitForTimeout(700); const t = await q.locator("body").innerText(); const hit = t.match(banned); ok(`claims ${path}: no unverified claim or invented proof`, !hit, hit ? hit[0] : ""); }
+    await q.goto(base + "/products/energy-strips", { waitUntil: "load" }); await q.waitForTimeout(700); const use = await q.locator('[data-testid="usage"]').innerText(); ok("product page: usage facts show only supplied facts", /let it dissolve/i.test(use) && /mint/i.test(use) && !/time to dissolve|texture|aftertaste|storage|sugar|null/i.test(use), use.replace(/\n/g, " | ").slice(0, 200));
+    const cmp = await q.locator('[data-testid="comparison"]').innerText(); ok("product page: fair format comparison, no sugar row", /needs a drink/i.test(cmp) && /coffee/i.test(cmp) && /energy drink/i.test(cmp) && !/sugar/i.test(cmp));
+    ok("product page: benefits present", await q.locator('[data-testid="benefits"] h3').count() === 4);
+    await q.goto(base + "/story", { waitUntil: "load" }); await q.waitForTimeout(700); ok("story: leads with why it exists", /caffeine,\s+without the can/i.test(await q.locator("h1").innerText()));
+    const ev = await q.evaluate(async () => { const got = []; window.addEventListener("stillon:track", e => got.push(e.detail.event + ":" + e.detail.copy_variant)); return got; }); void ev; await q.context().close(); }
   ok("prelaunch status is shown", (await p.locator('[data-testid="status"]').first().innerText()).toLowerCase().includes("prelaunch"));
   for (const path of ["/", "/products/energy-strips"]) { await p.goto(base + path, { waitUntil: "networkidle" }); const o = p.locator('[data-testid="offers"]'); await o.scrollIntoViewIfNeeded(); const tag = path === "/" ? "home" : "pdp";
     const prices = await o.evaluate(el => ["intro", "everyday", "stockup"].map(i => el.querySelector(`[data-price="${i}"]`).textContent.trim()).join(",")); ok(`offers ${tag}: Intro $39, Everyday $69, Stockup $89`, prices === "$39,$69,$89", prices);
