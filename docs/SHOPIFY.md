@@ -17,12 +17,18 @@ If anything is missing, a variant is not found, a variant is not available for s
 | Area | Prelaunch | Shopify on |
 | --- | --- | --- |
 | Prices | `src/config/offers.ts` preview prices | Read from Shopify (variant price; selling-plan per-delivery price) |
-| Button | Get early access + email form | Checkout → Shopify hosted checkout |
+| Button | Get early access + email form | Add to bag → on-site bag panel → Secure checkout on Shopify |
 | CTA labels | Get early access | Get yours |
 | Disclosure | "Preview pricing…" | "Taxes and shipping are calculated at checkout…" |
 | Shipping page, FAQ "Can I buy it now?" | Not shipping yet | Calculated at checkout / Yes |
 
 The bundle names, contents (boxes, strips, ON Tag), layout, selection behaviour and ON Repeat. intervals still come from `src/config/offers.ts`; only prices come from Shopify.
+
+## The bag
+
+In Shopify mode "Add to bag" opens a panel on the site (`src/components/Bag.tsx`): bundles, quantity (1–5), remove, subtotal, ON Tag and ON Repeat. terms. It persists in the browser. Only "Secure checkout" leaves the site, for Shopify's hosted checkout, which Shopify does not allow to be replaced. To make that last step feel like the brand: style it in Shopify (Settings → Checkout → Customize: logo, white / near-black / #FF006E, closest bold font) and connect a subdomain such as shop.yourdomain.com in Shopify so the checkout address is yours.
+
+`/api/shopify/status` on preview deployments reports which settings the deployment can see and why it fell back (never values). It returns 404 on production.
 
 ## Setting up the store
 

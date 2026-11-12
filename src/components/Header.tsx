@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { EARLY_ACCESS, NAV } from "@/lib/site";
 import { Logo } from "./Brand";
 import { useCart } from "./Cart";
+import { useBag } from "./Bag";
 import { getLenis } from "./SmoothScroll";
 
 type Tone = "light" | "dark";
@@ -33,6 +34,8 @@ export function Header() {
   const toggle = useRef<HTMLButtonElement>(null);
   const menuOpen = useRef(false);
   const live = commerce.mode === "live";
+  const bag = useBag();
+  const bagOn = commerce.mode === "shopify" && bag.count > 0;
   const CTA = commerce.mode === "shopify" ? "Get yours" : "Get early access";
 
   useEffect(() => {
@@ -214,6 +217,11 @@ export function Header() {
                 <span className={`grid h-5 min-w-5 place-items-center rounded-full px-1 text-[10px] tracking-normal tabular-nums ${qty ? "bg-pink text-white" : "bg-current/15"}`} data-testid="cart-count">
                   <span className={qty ? "" : "text-inherit"}>{qty}</span>
                 </span>
+              </button>
+            ) : bagOn ? (
+              <button type="button" onClick={bag.open} className="nav-cta gap-2" aria-label={`Open bag, ${bag.count} item${bag.count === 1 ? "" : "s"}`} data-testid="bag-button">
+                Bag
+                <span className="grid h-5 min-w-5 place-items-center rounded-full bg-pink px-1 text-[10px] tracking-normal text-white tabular-nums">{bag.count}</span>
               </button>
             ) : (
               <Link href={EARLY_ACCESS} className="nav-cta">

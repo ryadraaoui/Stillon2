@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CTA } from "@/lib/site";
 import { track } from "@/lib/track";
 import { useCart } from "./Cart";
+import { useBag } from "./Bag";
 import { contents, isBestUnitValue, money, offerConfig, priceFor, repeatSaving, unitLabel, type Interval, type OfferId, type PurchaseType } from "@/config/offers";
 import { Box3D } from "./Box3D";
 
@@ -82,7 +83,7 @@ export function OfferConfigurator({ source, stage = true, shop = false }: { sour
   const effType: PurchaseType = offer.subscriptionEligible ? type : "one-time";
   const price = priceFor(offer, effType);
   const saving = repeatSaving(offer);
-  const [shopBusy, setShopBusy] = useState(false);
+  const bag = useBag();
 
   useEffect(() => {
     const el = root.current;
@@ -105,21 +106,9 @@ export function OfferConfigurator({ source, stage = true, shop = false }: { sour
     track("frequency_select", { offer: offerId, interval_days: d, source });
   };
 
-  async function checkout() {
-    if (shopBusy) return;
-    setShopBusy(true);
-    setState("idle");
-    track("checkout_start", { offer: offerId, purchase_type: effType, source });
-    try {
-      const res = await fetch("/api/shopify/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ offer: offerId, purchaseType: effType, interval: effType === "repeat" ? interval : undefined }) });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.url) throw new Error(data.error ?? "We couldn't start checkout. Nothing was charged.");
-      window.location.assign(data.url);
-    } catch (err) {
-      setState("error");
-      setMsg(err instanceof Error ? err.message : "We couldn't start checkout. Nothing was charged.");
-      setShopBusy(false);
-    }
+  function addToBag() {
+    track("add_to_bag", { offer: offerId, purchase_type: effType, source });
+    bag.add({ offer: offerId, type: effType, interval: effType === "repeat" ? interval : null });
   }
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
@@ -263,14 +252,9 @@ export function OfferConfigurator({ source, stage = true, shop = false }: { sour
         {/* 4 — checkout (Shopify) */}
         {shopData ? (
           <div className="mt-5">
-            <button type="button" onClick={checkout} disabled={shopBusy} className="btn btn-ink w-full" data-testid="shop-checkout">
-              {shopBusy ? "Opening secure checkout…" : "Checkout"}
+            <button type="button" onClick={addToBag} className="btn btn-ink w-full" data-testid="add-to-bag">
+              Add to bag · {m(price)}
             </button>
-            {state === "error" && (
-              <p role="alert" className="mt-2 px-1 text-sm font-semibold text-pinkdeep">
-                {msg}
-              </p>
-            )}
             <p className="mt-4 px-1 text-[11px] leading-relaxed text-grey" data-testid="disclosure">
               Taxes and shipping are calculated at checkout, which is hosted securely by Shopify.
               {effType === "repeat" && " ON Repeat. renews at the delivery price shown until you cancel; you can manage or cancel it from your order emails and account."}

@@ -111,10 +111,10 @@ export async function resolveVariantId(id: OfferId): Promise<string | null> {
 }
 
 /** Creates a cart and returns Shopify's hosted checkout URL. */
-export async function createCheckout(variantId: string, sellingPlanId?: string): Promise<string> {
+export async function createCheckout(lines: { merchandiseId: string; quantity: number; sellingPlanId?: string }[]): Promise<string> {
   const data = await storefront<{ cartCreate: { cart: { checkoutUrl: string } | null; userErrors: { message: string }[] } }>(
     `mutation CartCreate($input: CartInput!) { cartCreate(input: $input) { cart { id checkoutUrl } userErrors { field message } } }`,
-    { input: { lines: [{ merchandiseId: variantId, quantity: 1, ...(sellingPlanId ? { sellingPlanId } : {}) }] } },
+    { input: { lines } },
   );
   const { cart, userErrors } = data.cartCreate;
   if (!cart?.checkoutUrl || userErrors?.length) throw new Error(userErrors?.[0]?.message ?? "Shopify returned no checkout URL");

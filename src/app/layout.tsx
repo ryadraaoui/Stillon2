@@ -5,6 +5,7 @@ import "./globals.css";
 import { getCommerce } from "@/lib/commerce";
 import { SITE } from "@/lib/site";
 import { CartProvider } from "@/components/Cart";
+import { BagProvider } from "@/components/Bag";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SmoothScroll } from "@/components/SmoothScroll";
@@ -28,12 +29,14 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className="antialiased">
       <body>
         <CartProvider commerce={commerce}>
+          <BagProvider>
           <SmoothScroll />
           <Header />
           <main id="main" className="page-in">
             {children}
           </main>
           <Footer />
+          </BagProvider>
         </CartProvider>
       </body>
     </html>
