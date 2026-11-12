@@ -60,6 +60,10 @@ const VARIANTS = `query Variants($ids: [ID!]!) { nodes(ids: $ids) { ... on Produ
 
 export type ShopifyCommerce = { mode: "shopify"; currency: string; offers: Offer[] };
 
+/** Why the last load fell back to prelaunch (message only; never a token or value). */
+let lastProblem: string | null = null;
+export const lastShopifyProblem = () => lastProblem;
+
 /**
  * Builds the bundle list from Shopify. Returns null (so the site falls back to prelaunch) if anything is missing,
  * unavailable or priced in more than one currency: a half-configured shop must never show wrong prices.
@@ -89,8 +93,10 @@ export async function loadShopifyOffers(): Promise<ShopifyCommerce | null> {
       return { ...base, oneTimePrice: Number(v.price.amount), subscriptionPrice, subscriptionEligible: base.subscriptionEligible && subscriptionPrice !== null };
     });
     if (currencies.size !== 1) throw new Error("bundles are priced in different currencies");
+    lastProblem = null;
     return { mode: "shopify", currency: [...currencies][0], offers };
   } catch (e) {
+    lastProblem = e instanceof Error ? e.message : String(e);
     console.error("[shopify] falling back to prelaunch:", e);
     return null;
   }
