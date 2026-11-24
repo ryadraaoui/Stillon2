@@ -12,6 +12,19 @@ All of these must be set (see `.env.example`): `SHOPIFY_CHECKOUT_ENABLED=true`, 
 
 If anything is missing, a variant is not found, a variant is not available for sale, or the bundles are priced in different currencies, the site **falls back to prelaunch** and logs why. A half-configured shop never shows wrong prices.
 
+## Currency: USD
+
+The site asks Shopify for **United States** prices (`SHOPIFY_COUNTRY`, default `US`) and only accepts **USD**
+(`SHOPIFY_CURRENCY`, default `USD`). Carts are created for a US buyer, so checkout is in USD too.
+
+If the store's currency is CAD, Shopify only returns USD once a US market exists:
+**Shopify admin → Settings → Markets → United States** (add it if missing) → currency **USD**, and set its prices.
+"Adjust prices by exchange rate" gives converted prices like $49.38; to get round numbers, use the market's
+**Product pricing** to set fixed USD prices for the three bundles (e.g. $39 / $69 / $89).
+
+Until Shopify returns USD the site stays in prelaunch rather than showing CAD, and `/api/shopify/status` says why.
+Set `SHOPIFY_CURRENCY=any` to accept whatever Shopify returns.
+
 ## What changes when it is on
 
 | Area | Prelaunch | Shopify on |

@@ -15,7 +15,7 @@ export function stripeConfigured() {
 }
 
 export function formatPrice(amount: number, currency: string) {
-  return new Intl.NumberFormat("en-CA", { style: "currency", currency: currency.toUpperCase() }).format(amount / 100);
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: currency.toUpperCase() }).format(amount / 100);
 }
 
 export async function stripe(path: string, init?: { method?: string; body?: URLSearchParams; revalidate?: number }) {

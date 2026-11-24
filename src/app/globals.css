@@ -247,3 +247,35 @@ body {
 .nav-scrim[data-open="false"] { opacity: 0; visibility: hidden; pointer-events: none; }
 @media (max-width: 1023px) { .nav-cta { height: 38px; padding: 0 14px; font-size: 10.5px; } }
 @media (prefers-reduced-motion: reduce) { .nav-shell, .nav-capsule, .nav-zone, .nav-link, .nav-link::after, .nav-cta, .nav-logo img, .nav-panel, .nav-scrim { transition: none; } }
+
+/* ---------- Waitlist landing (/waitlist) ---------- */
+.btn-pink { background: var(--color-pink); color: #fff; }
+.btn-pink::before { background: var(--color-ivory); }
+.btn-pink:hover, .btn-pink:focus-visible { color: var(--color-ink); }
+.wl-ghost {
+  font-weight: 900; font-style: italic; letter-spacing: -0.07em; line-height: 0.8;
+  font-size: clamp(220px, 44vw, 820px);
+  color: transparent; -webkit-text-stroke: 1.5px rgba(255, 0, 110, 0.38);
+}
+/* film grain over the hero: a tiny inline SVG noise, no network request */
+.wl-grain::after {
+  content: ""; position: absolute; inset: 0; z-index: 5; pointer-events: none; opacity: 0.09; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@keyframes wl-marquee { to { transform: translateX(-33.333%); } }
+.wl-ticker-track { animation: wl-marquee 28s linear infinite; }
+.wl-ticker:hover .wl-ticker-track { animation-play-state: paused; }
+@keyframes wl-pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 0, 110, 0.6); } 100% { box-shadow: 0 0 0 12px rgba(255, 0, 110, 0); } }
+.wl-pulse { animation: wl-pulse 1.6s ease-out infinite; }
+.wl-sticky {
+  position: fixed; z-index: 60; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  transform: translateY(140%); transition: transform 0.45s var(--ease-out-expo);
+}
+.wl-sticky.is-on { transform: none; }
+.wl-sticky .btn { box-shadow: 0 14px 40px -12px rgba(255, 0, 110, 0.7); min-height: 56px; }
+@keyframes wl-pop { from { opacity: 0; transform: translateY(16px) scale(0.98); } to { opacity: 1; transform: none; } }
+.wl-done { animation: wl-pop 0.7s var(--ease-out-expo) both; }
+@media (prefers-reduced-motion: reduce) {
+  .wl-ticker-track, .wl-pulse, .wl-done { animation: none !important; }
+  .wl-sticky { transition: none; }
+}

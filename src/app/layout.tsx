@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   description: "Caffeine, without the can. Still ON. is a dissolvable caffeine strip: 50 mg per strip, no water needed, pocket-sized. Get early access.",
   applicationName: "Still ON.",
   alternates: { canonical: "/" },
-  openGraph: { type: "website", siteName: "Still ON.", title: "Still ON. — The day isn't done.", description: "Caffeine, without the can. Dissolvable caffeine strips. Get early access.", locale: "en_CA", url: "/" },
+  openGraph: { type: "website", siteName: "Still ON.", title: "Still ON. — The day isn't done.", description: "Caffeine, without the can. Dissolvable caffeine strips. Get early access.", locale: "en_US", url: "/" },
   twitter: { card: "summary_large_image", title: "Still ON. — The day isn't done.", description: "Caffeine, without the can. Dissolvable caffeine strips. Get early access." },
 };
 export const viewport: Viewport = { themeColor: "#f7f3ee", width: "device-width", initialScale: 1 };

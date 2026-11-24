@@ -19,9 +19,15 @@ import { offerConfig, type Interval, type Offer, type OfferId } from "@/config/o
  *   SHOPIFY_PRODUCT_INTRO|EVERYDAY|STOCKUP   the number at the end of each product's admin URL. Its first variant is used.
  *     or SHOPIFY_VARIANT_INTRO|EVERYDAY|STOCKUP   a specific variant id (numeric or gid://shopify/ProductVariant/…)
  *   SHOPIFY_SELLING_PLAN_30|60|90     selling-plan ids for ON Repeat. (numeric or gid://shopify/SellingPlan/…)
+ * Optional: SHOPIFY_COUNTRY (default US): the market prices and carts are asked for. With a United States market in USD
+ *   enabled in Shopify (Settings → Markets), Shopify returns USD prices and a USD checkout even if the store's own
+ *   currency is CAD. SHOPIFY_CURRENCY (default USD): the site refuses to show prices in any other currency and
+ *   stays in prelaunch instead, so CAD can never leak onto the page. Set SHOPIFY_CURRENCY=any to accept whatever comes back.
  * Optional: SHOPIFY_API_VERSION (default below). SHOPIFY_STOREFRONT_URL exists for automated tests only.
  */
 export const SHOPIFY_API_VERSION = process.env.SHOPIFY_API_VERSION ?? "2026-07";
+export const SHOPIFY_COUNTRY = (process.env.SHOPIFY_COUNTRY ?? "US").toUpperCase();
+export const SHOPIFY_CURRENCY = (process.env.SHOPIFY_CURRENCY ?? "USD").toUpperCase();
 
 const gid = (kind: "ProductVariant" | "SellingPlan" | "Product", v: string | undefined) => (!v ? null : v.startsWith("gid://") ? v : /^\d+$/.test(v) ? `gid://shopify/${kind}/${v}` : null);
 
@@ -56,7 +62,7 @@ type VariantNode = {
   sellingPlanAllocations?: { nodes: { sellingPlan: { id: string }; priceAdjustments: { perDeliveryPrice?: { amount: string }; price?: { amount: string } }[] }[] };
 };
 const FIELDS = `id availableForSale price { amount currencyCode } sellingPlanAllocations(first: 10) { nodes { sellingPlan { id } priceAdjustments { price { amount } perDeliveryPrice { amount } } } }`;
-const VARIANTS = `query Variants($ids: [ID!]!) { nodes(ids: $ids) { ... on ProductVariant { ${FIELDS} } ... on Product { variants(first: 1) { nodes { ${FIELDS} } } } } }`;
+const VARIANTS = `query Variants($ids: [ID!]!, $country: CountryCode) @inContext(country: $country) { nodes(ids: $ids) { ... on ProductVariant { ${FIELDS} } ... on Product { variants(first: 1) { nodes { ${FIELDS} } } } } }`;
 
 export type ShopifyCommerce = { mode: "shopify"; currency: string; offers: Offer[] };
 
@@ -73,7 +79,7 @@ export async function loadShopifyOffers(): Promise<ShopifyCommerce | null> {
   try {
     const ids = offerConfig.offers.map((o) => merchandiseFor(o.id));
     if (ids.some((i) => !i)) throw new Error("a SHOPIFY_PRODUCT_* or SHOPIFY_VARIANT_* id is missing or malformed");
-    const data = await storefront<{ nodes: ((VariantNode & { variants?: { nodes: VariantNode[] } }) | null)[] }>(VARIANTS, { ids }, 300);
+    const data = await storefront<{ nodes: ((VariantNode & { variants?: { nodes: VariantNode[] } }) | null)[] }>(VARIANTS, { ids, country: SHOPIFY_COUNTRY }, 300);
     const planIds = offerConfig.intervals.map((d) => sellingPlanFor(d)).filter(Boolean);
     const currencies = new Set<string>();
     const offers = offerConfig.offers.map((base, i) => {
@@ -93,8 +99,11 @@ export async function loadShopifyOffers(): Promise<ShopifyCommerce | null> {
       return { ...base, oneTimePrice: Number(v.price.amount), subscriptionPrice, subscriptionEligible: base.subscriptionEligible && subscriptionPrice !== null };
     });
     if (currencies.size !== 1) throw new Error("bundles are priced in different currencies");
+    const currency = [...currencies][0];
+    if (SHOPIFY_CURRENCY !== "ANY" && currency !== SHOPIFY_CURRENCY)
+      throw new Error(`Shopify returned prices in ${currency}, not ${SHOPIFY_CURRENCY}: add a ${SHOPIFY_COUNTRY} market priced in ${SHOPIFY_CURRENCY} in Shopify (Settings → Markets)`);
     lastProblem = null;
-    return { mode: "shopify", currency: [...currencies][0], offers };
+    return { mode: "shopify", currency, offers };
   } catch (e) {
     lastProblem = e instanceof Error ? e.message : String(e);
     console.error("[shopify] falling back to prelaunch:", e);
@@ -106,15 +115,15 @@ export async function loadShopifyOffers(): Promise<ShopifyCommerce | null> {
 export async function resolveVariantId(id: OfferId): Promise<string | null> {
   const m = merchandiseFor(id);
   if (!m || m.includes("/ProductVariant/")) return m;
-  const data = await storefront<{ node: { variants: { nodes: { id: string }[] } } | null }>(`query ProductVariant($id: ID!) { node(id: $id) { ... on Product { variants(first: 1) { nodes { id } } } } }`, { id: m }, 300);
+  const data = await storefront<{ node: { variants: { nodes: { id: string }[] } } | null }>(`query ProductVariant($id: ID!, $country: CountryCode) @inContext(country: $country) { node(id: $id) { ... on Product { variants(first: 1) { nodes { id } } } } }`, { id: m, country: SHOPIFY_COUNTRY }, 300);
   return data.node?.variants.nodes[0]?.id ?? null;
 }
 
 /** Creates a cart and returns Shopify's hosted checkout URL. */
 export async function createCheckout(lines: { merchandiseId: string; quantity: number; sellingPlanId?: string }[]): Promise<string> {
   const data = await storefront<{ cartCreate: { cart: { checkoutUrl: string } | null; userErrors: { message: string }[] } }>(
-    `mutation CartCreate($input: CartInput!) { cartCreate(input: $input) { cart { id checkoutUrl } userErrors { field message } } }`,
-    { input: { lines } },
+    `mutation CartCreate($input: CartInput!, $country: CountryCode) @inContext(country: $country) { cartCreate(input: $input) { cart { id checkoutUrl } userErrors { field message } } }`,
+    { input: { lines, buyerIdentity: { countryCode: SHOPIFY_COUNTRY } }, country: SHOPIFY_COUNTRY },
   );
   const { cart, userErrors } = data.cartCreate;
   if (!cart?.checkoutUrl || userErrors?.length) throw new Error(userErrors?.[0]?.message ?? "Shopify returned no checkout URL");

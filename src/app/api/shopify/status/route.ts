@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { lastShopifyProblem, loadShopifyOffers, merchandiseFor, SHOPIFY_API_VERSION } from "@/lib/shopify";
+import { lastShopifyProblem, loadShopifyOffers, merchandiseFor, SHOPIFY_API_VERSION, SHOPIFY_COUNTRY, SHOPIFY_CURRENCY } from "@/lib/shopify";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +24,8 @@ export async function GET() {
       SHOPIFY_PRODUCT_STOCKUP: merchandiseFor("stockup") ? "present" : "missing or not a number",
     },
     apiVersion: SHOPIFY_API_VERSION,
+    market: { country: SHOPIFY_COUNTRY, requiredCurrency: SHOPIFY_CURRENCY },
+    email: { KLAVIYO_PRIVATE_KEY: has("KLAVIYO_PRIVATE_KEY") ? "present" : "missing", KLAVIYO_LIST_ID: has("KLAVIYO_LIST_ID") ? "present" : "missing", NOTIFY_WEBHOOK_URL: has("NOTIFY_WEBHOOK_URL") ? "present" : "missing" },
     result: shop ? "Shopify is ON for this deployment" : "Prelaunch (Shopify off)",
     reason: shop ? null : (lastShopifyProblem() ?? "The switch-on settings above are not all visible to this deployment."),
     prices: shop ? Object.fromEntries(shop.offers.map((o) => [o.id, { oneTime: o.oneTimePrice, onRepeat: o.subscriptionPrice }])) : null,

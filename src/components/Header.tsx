@@ -223,6 +223,10 @@ export function Header() {
                 Bag
                 <span className="grid h-5 min-w-5 place-items-center rounded-full bg-pink px-1 text-[10px] tracking-normal text-white tabular-nums">{bag.count}</span>
               </button>
+            ) : pathname === "/waitlist" ? (
+              <a href="#join" className="nav-cta">
+                Join the list
+              </a>
             ) : (
               <Link href={EARLY_ACCESS} className="nav-cta">
                 <span className="max-lg:hidden">{CTA}</span>

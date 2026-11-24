@@ -145,7 +145,7 @@ function CartDrawer() {
   }, [qty]);
 
   const price = commerce.mode === "live" ? commerce.price : null;
-  const subtotal = price ? new Intl.NumberFormat("en-CA", { style: "currency", currency: price.currency.toUpperCase() }).format((price.amount * qty) / 100) : null;
+  const subtotal = price ? new Intl.NumberFormat("en-US", { style: "currency", currency: price.currency.toUpperCase() }).format((price.amount * qty) / 100) : null;
 
   return (
     <div className={`fixed inset-0 z-[90] ${isOpen ? "" : "pointer-events-none"}`} aria-hidden={!isOpen} inert={!isOpen}>

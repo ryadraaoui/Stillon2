@@ -18,7 +18,12 @@ export type TrackEvent =
   | "checkout_start"
   | "early_access_submit"
   | "early_access_success"
-  | "early_access_error";
+  | "early_access_error"
+  | "waitlist_view"
+  | "waitlist_submit"
+  | "waitlist_success"
+  | "waitlist_error"
+  | "waitlist_share";
 
 export function track(event: TrackEvent, props: Record<string, string | number | boolean> = {}) {
   if (typeof window === "undefined") return;
